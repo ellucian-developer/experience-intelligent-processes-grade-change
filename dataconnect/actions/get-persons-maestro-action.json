@@ -1,0 +1,66 @@
+{
+  "name": "get-persons-maestro-action",
+  "parameters": [
+    {
+      "name": "id",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "apiDefinition": {
+    "authType": "ethosToken",
+    "httpVerb": "GET",
+    "outputSchema": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Person Guid"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    }
+  },
+  "pipeline": [
+    "Ethos Proxy Get with Filter",
+    "Object Mapper"
+  ],
+  "segments": {
+    "Ethos Proxy Get with Filter": {
+      "class": "ethosProxyGetFilter",
+      "config": {
+        "resource": "persons",
+        "filter": "?criteria=%7B%22credentials%22%3A%5B%7B%22type%22%3A%22bannerId%22%2C%22value%22%3A%22{{context.id}}%22%7D%5D%7D",
+        "payloadTargetPath": "persons",
+        "acceptVersions": [
+          "12"
+        ],
+        "cache": false,
+        "queryByPost": false,
+        "ignoreErrors": false
+      }
+    },
+    "Object Mapper": {
+      "class": "objectMapper",
+      "config": {
+        "ignoreUndefined": false,
+        "keepOriginal": true,
+        "mapping": [
+          {
+            "source": [
+              {
+                "path": "persons.0.id",
+                "default": "",
+                "isArray": false
+              }
+            ],
+            "target": "id"
+          }
+        ]
+      }
+    }
+  }
+}

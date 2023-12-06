@@ -1,0 +1,236 @@
+name: Grade Change
+description: ''
+maestroYamlVersion: 1.0.0
+type: api
+segments:
+  start-api_2cba5814-3598-4b85-a9e3-0034b3632b4b:
+    class: start-api
+    classDisplayName: Start
+    name: Grade Change Start
+    config:
+      expirationDate: P120D
+      input:
+        - name: facultyID
+          type: String
+          label: Faculty ID
+          isPerson: false
+        - name: facultyName
+          type: String
+          label: Faculty Name
+          isPerson: false
+        - name: studentID
+          type: String
+          label: Student ID
+          isPerson: false
+        - name: studentName
+          type: String
+          label: Student Name
+          isPerson: false
+        - name: courseID
+          type: String
+          label: Course ID
+          isPerson: false
+        - name: courseName
+          type: String
+          label: Course Name
+          isPerson: false
+        - name: oldGrade
+          type: String
+          label: Old Grade
+          isPerson: false
+        - name: newGrade
+          type: String
+          label: New Grade
+          isPerson: false
+        - name: facultyComment
+          type: String
+          label: Faculty Comment
+          isPerson: false
+        - name: term
+          type: String
+          label: Term
+        - name: academicPeriodId
+          type: String
+          label: Academic Period Id
+        - name: studentGuid
+          type: String
+          label: Student Guid
+        - name: gradeRowId
+          type: String
+          label: Grade Row Id
+        - name: gradeId
+          type: String
+          label: Grade Id
+        - name: gradeChangeCode
+          type: String
+          label: Grade Change Code
+    out:
+      - action_c03c00ff-dd54-4897-b62c-95e385cf63f5
+  action_c03c00ff-dd54-4897-b62c-95e385cf63f5:
+    class: action
+    classDisplayName: Action
+    name: Get Registrar
+    config:
+      code: GETREGISTRAR
+      version: 2.0.0
+      isBaseline: false
+      parameters:
+        - inputParameterName: id
+          staticValue: A00037750
+          mapType: staticValue
+      inputs: []
+    in:
+      - start-api_2cba5814-3598-4b85-a9e3-0034b3632b4b
+    out:
+      - approval-task_33c526a0-a2b1-40f9-8085-595ec09a93d2
+  approval-task_33c526a0-a2b1-40f9-8085-595ec09a93d2:
+    class: approval-task
+    classDisplayName: Approval Task
+    name: Request for Grade Change
+    config:
+      approvalView:
+        approvalDetails: ''
+        approvalSelectedData:
+          - displayName: Faculty ID
+            name: facultyID
+            type: String
+          - displayName: Faculty Name
+            name: facultyName
+            type: String
+          - displayName: Student ID
+            name: studentID
+            type: String
+          - displayName: Student Name
+            name: studentName
+            type: String
+          - displayName: Course ID
+            name: courseID
+            type: String
+          - displayName: Course Name
+            name: courseName
+            type: String
+          - displayName: Old Grade
+            name: oldGrade
+            type: String
+          - displayName: New Grade
+            name: newGrade
+            type: String
+          - displayName: Faculty Comment
+            name: facultyComment
+            type: String
+          - displayName: Term
+            name: term
+            type: String
+          - name: __approval_task_33c526a0_a2b1_40f9_8085_595ec09a93d2_comment
+            displayName: Request for Grade Change Comment
+        isCommentEnabled: true
+      userTaskActions:
+        - label: Approve
+          value: approve
+        - label: Deny
+          value: deny
+      assignee: __action_c03c00ff_dd54_4897_b62c_95e385cf63f5_id
+      sendExperienceNotification: true
+      expNotificationMessage:
+        assignment: A task for {workflowName} has been assigned to you.
+        dueDate: A task for {workflowName} is due for you.
+      expNotificationIcon:
+        assignment: requirements
+        dueDate: requirements
+    in:
+      - action_c03c00ff-dd54-4897-b62c-95e385cf63f5
+    out:
+      - split-task_fd23dcaf-4af6-4541-995e-0c1eb64b3de6
+  action_aeb17ea8-db94-49ca-84ac-1880540f3273:
+    class: action
+    classDisplayName: Action
+    name: Update Student Grade
+    config:
+      code: UPDATESTUDENTGRADE
+      version: 16.0.0
+      isBaseline: false
+      parameters:
+        - inputParameterName: recordId
+          processVariableName: gradeRowId
+          mapType: processVariable
+        - inputParameterName: gradeId
+          processVariableName: gradeId
+          mapType: processVariable
+        - inputParameterName: changeReasonId
+          processVariableName: gradeChangeCode
+          mapType: processVariable
+      inputs: []
+    in:
+      - split-task_fd23dcaf-4af6-4541-995e-0c1eb64b3de6
+    out:
+      - manual-task_5ac8d6b8-d9bd-4c9e-be21-3a71e302a63e
+  manual-task_5ac8d6b8-d9bd-4c9e-be21-3a71e302a63e:
+    class: manual-task
+    classDisplayName: Simple Task
+    segmentDescription: Registrar has changed the Grade
+    name: Grade changed successfully
+    config:
+      taskDetails: <p>Registrar has modified the grade successfully.</p>
+      userTaskActions:
+        - label: OK
+          value: ok
+      assignee: __requestedBy
+      sendExperienceNotification: true
+      expNotificationMessage:
+        assignment: A task for {workflowName} has been assigned to you.
+        dueDate: A task for {workflowName} is due for you.
+      expNotificationIcon:
+        assignment: requirements
+        dueDate: requirements
+    in:
+      - action_aeb17ea8-db94-49ca-84ac-1880540f3273
+    out:
+      - end_d4c8b57b-16d7-44e1-bc03-eee0397a7ac6
+  end_d4c8b57b-16d7-44e1-bc03-eee0397a7ac6:
+    class: end
+    classDisplayName: End
+    name: End
+    config: {}
+    in:
+      - manual-task_5ac8d6b8-d9bd-4c9e-be21-3a71e302a63e
+  manual-task_10c48adb-cd52-4529-9952-800900af2245:
+    class: manual-task
+    classDisplayName: Simple Task
+    segmentDescription: Registrar has denied the Grade change request
+    name: Grade change denied
+    config:
+      taskDetails: Registrar has denied the Grade change request
+      userTaskActions:
+        - label: OK
+          value: ok
+      assignee: __requestedBy
+      sendExperienceNotification: true
+      expNotificationMessage:
+        assignment: A task for {workflowName} has been assigned to you.
+        dueDate: A task for {workflowName} is due for you.
+      expNotificationIcon:
+        assignment: requirements
+        dueDate: requirements
+    in:
+      - split-task_fd23dcaf-4af6-4541-995e-0c1eb64b3de6
+    out:
+      - end_111ca44d-00f2-48c2-825a-cd9b1db69c94
+  end_111ca44d-00f2-48c2-825a-cd9b1db69c94:
+    class: end
+    classDisplayName: End
+    name: End
+    config: {}
+    in:
+      - manual-task_10c48adb-cd52-4529-9952-800900af2245
+  split-task_fd23dcaf-4af6-4541-995e-0c1eb64b3de6:
+    class: split-task
+    classDisplayName: Split
+    name: Split
+    config: {}
+    in:
+      - approval-task_33c526a0-a2b1-40f9-8085-595ec09a93d2
+    out:
+      - node: action_aeb17ea8-db94-49ca-84ac-1880540f3273
+        condition: default
+      - node: manual-task_10c48adb-cd52-4529-9952-800900af2245
+        condition: __approval_task_33c526a0_a2b1_40f9_8085_595ec09a93d2_outcome == 'deny'

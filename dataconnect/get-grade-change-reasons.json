@@ -1,0 +1,30 @@
+{
+  "name": "get-grade-change-reasons",
+  "parameters": [
+    {
+      "name": "ethosApiKey",
+      "type": "string",
+      "sensitive": true
+    }
+  ],
+  "apiDefinition": {
+    "authType": "userToken",
+    "httpVerb": "GET"
+  },
+  "pipeline": [
+    "Ethos Proxy Get"
+  ],
+  "segments": {
+    "Ethos Proxy Get": {
+      "class": "ethosProxyGet",
+      "config": {
+        "resource": "grade-change-reasons",
+        "acceptVersions": [
+          "6"
+        ],
+        "cache": false,
+        "ignoreErrors": false
+      }
+    }
+  }
+}

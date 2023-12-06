@@ -1,0 +1,42 @@
+{
+  "name": "get-class-attendance-roster-maestro",
+  "parameters": [
+    {
+      "name": "ethosApiKey",
+      "type": "string",
+      "sensitive": true
+    },
+    {
+      "name": "ssbsectTermCodet",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "ssbsectCrnt",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "apiDefinition": {
+    "authType": "userToken",
+    "httpVerb": "GET"
+  },
+  "pipeline": [
+    "Ethos Proxy Get with Filter"
+  ],
+  "segments": {
+    "Ethos Proxy Get with Filter": {
+      "class": "ethosProxyGetFilter",
+      "config": {
+        "resource": "class-attendance-roster",
+        "filter": "?ssbsectTermCodet={{context.ssbsectTermCodet}}&ssbsectCrnt={{context.ssbsectCrnt}}",
+        "acceptVersions": [
+          "1.0.0"
+        ],
+        "cache": false,
+        "queryByPost": false,
+        "ignoreErrors": false
+      }
+    }
+  }
+}

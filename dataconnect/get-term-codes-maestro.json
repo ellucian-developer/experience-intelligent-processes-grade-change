@@ -1,0 +1,26 @@
+{
+  "name": "get-term-codes-maestro",
+  "parameters": [
+    {
+      "name": "ethosApiKey",
+      "type": "string",
+      "sensitive": true
+    }
+  ],
+  "apiDefinition": {
+    "authType": "userToken",
+    "httpVerb": "GET"
+  },
+  "pipeline": ["Ethos Proxy Get"],
+  "segments": {
+    "Ethos Proxy Get": {
+      "class": "ethosProxyGet",
+      "config": {
+        "resource": "term-codes?limit=1000",
+        "acceptVersions": ["1"],
+        "cache": false,
+        "ignoreErrors": false
+      }
+    }
+  }
+}

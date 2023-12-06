@@ -1,0 +1,30 @@
+{
+  "messages": {
+    "card.name": "Faculty Grade Change Form",
+    "card.helperText": "Form to Request Grade Change",
+
+    "fields.loading": "Loading...",
+    "fields.term": "Term",
+    "fields.courseID": "Select Section CRN",
+    "fields.studentID": "Select Student",
+    "fields.oldGrade": "Original Grade",
+    "fields.newGrade": "Corrected Grade",
+    "fields.facultyComment": "Any other details",
+    "fields.registrarID": "Select Registrar",
+    "fields.reasonForGradeChange": "Reason for Grade Change",
+
+    "fields.buttonCta": "Request for Approval",
+    "fields.buttonReset": "Reset",
+    "fields.requesting": "Requesting",
+
+    "home.courseInformation": "Course Information",
+    "home.courseHelperText": "Please enter the course information",
+    "home.gradeInformation": "Grade Information",
+    "home.gradeHelperText": "Please enter the grade information",
+    "home.registrarInformation": "Registrar Information",
+    "home.registrarHelperText": "Please select the registrar information",
+
+    "messages.snackbarSuccess": "Grade Change Request submitted successfully.",
+    "messages.snackbarFailure": "Something went wrong."
+  }
+}

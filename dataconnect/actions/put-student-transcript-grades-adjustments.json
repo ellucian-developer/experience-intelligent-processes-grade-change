@@ -1,0 +1,62 @@
+{
+  "name": "put-student-transcript-grades-adjustments",
+  "parameters": [
+    {
+      "name": "recordId",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "gradeId",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "changeReasonId",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "apiDefinition": {
+    "authType": "ethosToken",
+    "httpVerb": "PUT"
+  },
+  "pipeline": [
+    "Ethos Proxy Auth",
+    "JavaScript Transform",
+    "HTTP Request"
+  ],
+  "segments": {
+    "Ethos Proxy Auth": {
+      "class": "ethosProxyAuth"
+    },
+    "JavaScript Transform": {
+      "class": "JavaScriptTransform",
+      "config": {
+        "pushUndefined": true,
+        "stopOnError": false,
+        "draft": false,
+        "code": "function transform (message, context) {\n  // Put your code here.\n  context.set(\"token\", message.header.ethosApiAuthToken);\n  message.payload.data = {\n  \"id\": context.recordId,\n  \"detail\": {\n    \"grade\": {\n        \"id\": context.gradeId\n    },\n    \"changeReason\": {\n        \"id\": context.changeReasonId\n    }\n  }\n}\n  return message;\n}\n"
+      }
+    },
+    "HTTP Request": {
+      "class": "http-fitting",
+      "config": {
+        "method": "PUT",
+        "uri": "https://integrate.elluciancloud.com/api/student-transcript-grades/{{{context.recordId}}}",
+        "cache": false,
+        "stream": false,
+        "headers": {
+          "Accept": "application/vnd.hedtech.integration.v1+json",
+          "Content-Type": "application/vnd.hedtech.integration.student-transcript-grades-adjustments.v1+json",
+          "Authorization": "Bearer {{context.token}}"
+        },
+        "body": {
+          "type": "raw",
+          "content": "{{message.payload.data}}"
+        },
+        "ignoreErrors": false
+      }
+    }
+  }
+}
