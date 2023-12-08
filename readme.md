@@ -6,7 +6,10 @@ It comprises code for a Experience Card and Page along with an associated Maestr
 
 - The Experience Card and Page enables faculty to specify the target course and desired grade adjustments, triggering the invocation of the Maestro workflow. 
 - The Maestro workflow, in turn, executes the grade change process using the information provided by the faculty through the Experience Page.
-  
+
+
+> Kindly note that the Maestro-Experience extension is tailored exclusively for Banner only.
+
 ## Faculty Grade Change Form - Experience Card
 
 The experience card features a straightforward hyperlink leading to the Grade Change Form.
