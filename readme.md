@@ -113,7 +113,6 @@ This extension necessitated the utilization of both BP APIs and EEDM APIs, as a 
 - [course-maintenance](https://resources.elluciancloud.com/bundle/banner_api_business_api_course_maintenance_1.1.0/page/course-maintenance.html) 
 - [faculty-assignment](https://resources.elluciancloud.com/bundle/banner_api_business_api_faculty_assignment_1.0.0/page/faculty-assignment.html)
 - [grade-change-reasons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html)
-- [grade-definitions](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html)
 - [persons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_persons_12.6.0/page/persons.html)
 - [student-transcript-grades](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html)
 - [student-transcript-grades-adjustments](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_adjustments_1.0.0/page/student-transcript-grades-adjustments.html)
@@ -139,32 +138,32 @@ The sequence of data flow is as follows
 
 Below mentioned APIs are fired as soon as the page is loaded
 
-| Endpoint    | Description |
-| ------------------------------------------------------- | ------- |
-| `term-codes`  | Retrieves the list of term codes available    |
-| `grade-change-reasons`    | Retrieves the catalogue of reasons available for faculty members to designate when submitting a request for a grade change    |
+| Endpoint    | API Type | Description |
+| ------------------------------------------------------- |-------------| ------- |
+| `term-codes`  | BPAPI | Retrieves the list of term codes available    |
+| `grade-change-reasons`    | EEDM | Retrieves the catalogue of reasons available for faculty members to designate when submitting a request for a grade change    |
 
 ### Dependent APIs
 
 As soon as the faculty keys in the term code the following data flow gets invoked
 
-| Endpoint    | Description | Dependent On | Data to Pick | Authentication Type |
-| -------- | ------- |--------------|-------------------|-------------------|
-| `faculty-assignment`  | Upon the faculty's input of the term code, this API will be utilized to retrieve a comprehensive list of all available Course Reference Numbers (CRNs) associated with the specified term.   | <ul><li>`term`</li></ul> | <ul><li>`crn`</li></ul> | User Token |
-| `academic-periods`  | Hit this API to get the current academic period GUID with the selected term   | <ul><li>`term`</li></ul> | <ul><li>`id`</li></ul> |User Token |
-| `class-attendance-roster`  | Given both the `term` and `CRN` parameters, it is necessary to query the `class-attendance-roster` API to gather information on all actively enrolled students.    | <ul><li>`term`</li><li>`crn`</li></ul> |<ul><li>`spridenId`</li><li>`spridenCurrName`</li></ul> |User Token |
-| `course-maintenance`  | To retrieve the current grade of a user, invoke this API with the specified dependent data.   | <ul><li>`term`</li><li>`crn`</li><li>`studentBannerId`</li></ul> | <ul><li>`SHRTCKG[0].grdeCodeFinal`</li></ul> | User Token |
-| `persons`  | In order to get the student's GUID, we have to invoke this API    | <ul><li>`studentBannerId`</li></ul> | <ul><li>`id`</li></ul> |User Token |
-| `student-transcript-grades`  | To obtain the current grade of a student, utilize this API by providing the current academic period GUID and the student GUID as necessary parameters.    | <ul><li>`studentGUID`</li><li>`academicPeriodGUID`</li></ul> | <ul><li>`id`</li></ul> |User Token |
+| Endpoint    | API Type | Description | Dependent On | Data to Pick | Authentication Type |
+| -------- | ------- |--------------|-------------------|-------------------|--------------|
+| `faculty-assignment`  | BPAPI | Upon the faculty's input of the term code, this API will be utilized to retrieve a comprehensive list of all available Course Reference Numbers (CRNs) associated with the specified term.   | <ul><li>`term`</li></ul> | <ul><li>`crn`</li></ul> | User Token |
+| `academic-periods`  | EEDM | Hit this API to get the current academic period GUID with the selected term   | <ul><li>`term`</li></ul> | <ul><li>`id`</li></ul> |User Token |
+| `class-attendance-roster`  | BPAPI | Given both the `term` and `CRN` parameters, it is necessary to query the `class-attendance-roster` API to gather information on all actively enrolled students.    | <ul><li>`term`</li><li>`crn`</li></ul> |<ul><li>`spridenId`</li><li>`spridenCurrName`</li></ul> |User Token |
+| `course-maintenance`  | BPAPI | To retrieve the current grade of a user, invoke this API with the specified dependent data.   | <ul><li>`term`</li><li>`crn`</li><li>`studentBannerId`</li></ul> | <ul><li>`SHRTCKG[0].grdeCodeFinal`</li></ul> | User Token |
+| `persons`  | EEDM | In order to get the student's GUID, we have to invoke this API    | <ul><li>`studentBannerId`</li></ul> | <ul><li>`id`</li></ul> |User Token |
+| `student-transcript-grades`  | EEDM | To obtain the current grade of a student, utilize this API by providing the current academic period GUID and the student GUID as necessary parameters.    | <ul><li>`studentGUID`</li><li>`academicPeriodGUID`</li></ul> | <ul><li>`id`</li></ul> |User Token |
 
 Upon acquiring all essential data for the Maestro workflow, proceed to invoke the `workflow-instances` Maestro API along with the workflow ID.
 
 
 ### Maestro Workflow Action
 
-| DataConnect Serverless Endpoint    | Description | Required Params  | Authentication Type |
-| -------- | ------- |--------------|--------------|
-| `student-transcript-grades/{id}`  | When the registrar approves the grade change, then this API is invoked automatically via Maestro Action and updates the grade.   | <ul><li>`recordId`</li><li>`gradeId`</li><li>`changeReasonId`</li></ul> |Ethos Token |
+| DataConnect Serverless Endpoint    | API Type | Description | Required Params  | Authentication Type |
+| -------- | --------------|------- |--------------|--------------|
+| `student-transcript-grades/{id}`  | EEDM | When the registrar approves the grade change, then this API is invoked automatically via Maestro Action and updates the grade.   | <ul><li>`recordId`</li><li>`gradeId`</li><li>`changeReasonId`</li></ul> |Ethos Token |
 
 
 

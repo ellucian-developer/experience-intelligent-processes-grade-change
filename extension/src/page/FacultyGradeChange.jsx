@@ -42,8 +42,6 @@ const FacultyGradeChange = () => {
         message: ''
     });
 
-    console.log(termCodes);
-
     const { data, setData, reset, post, errors, isDirty } = useForm({
         term: "",
         facultyID: "",
