@@ -7,7 +7,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { Edit, ListView } from '@ellucian/ds-icons/lib';
-import { DataQueryProvider, useDataQuery, userTokenDataConnectQuery } from '@ellucian/experience-extension-extras';
+import { MultiDataQueryProvider, useDataQuery, userTokenDataConnectQuery } from '@ellucian/experience-extension-extras';
 import { useData, usePageControl, useUserInfo } from '@ellucian/experience-extension/extension-utilities';
 import { Button, CircularProgress, Divider, DropdownTypeahead, DropdownTypeaheadItem, Grid, Snackbar, TextField, Typography, makeStyles } from '@ellucian/react-design-system/core';
 import { colorCtaIrisActive, colorCtaIrisBase, colorCtaIrisTint, colorTextNeutral250, colorTextNeutral400, spacing40 } from '@ellucian/react-design-system/core/styles/tokens';
@@ -512,21 +512,4 @@ function FacultyGradeChangeWithProviders() {
     </MultiDataQueryProvider>
 }
 
-const MultiDataQueryProvider = ({ options, children }) => {
-    const renderProviders = (optionsArray) => {
-        const [currentOptions, ...remainingOptions] = optionsArray;
-
-        if (currentOptions) {
-            return (
-                <DataQueryProvider options={currentOptions}>
-                    {renderProviders(remainingOptions)}
-                </DataQueryProvider>
-            );
-        }
-
-        return children;
-    };
-
-    return renderProviders(options);
-};
 export default FacultyGradeChangeWithProviders;
