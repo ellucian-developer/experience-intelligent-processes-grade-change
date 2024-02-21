@@ -32,8 +32,8 @@ const FacultyGradeChange = () => {
     const { data: students = [], isLoading: isFetchingStudent, setEnabled: setStudentQueryStatus, setQueryKeys: setQueryForStudent } = useDataQuery(attendanceResource);
     const { data: student = [], setEnabled: setStudentIdStatus, setQueryKeys: setQueryForStudentId } = useDataQuery(studentResource);
     const { data: courseMaintenance = [], isLoading: isFetchingCourseMaintenance, setEnabled: setCourseMaintenanceStatus, setQueryKeys: setQueryForCourseMaintenance } = useDataQuery(courseMaintenanceResource);
-    const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery('get-grade-change-reasons');
-    const { data: termCodes = [], isLoading: isFetchingTermCodes } = useDataQuery('get-term-codes-maestro');
+    const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery(process.env.PIPELINE_GET_GRADE_CHANGE_REASONS);
+    const { data: termCodes = [], isLoading: isFetchingTermCodes } = useDataQuery(process.env.PIPELINE_GET_BANNER_TERMS);
     const { data: academicPeriods = [], setEnabled: setAcademicPeriodsStatus, setQueryKeys: setQueryForAcademicPeriods } = useDataQuery(academicPeriodResource);
     const { data: studentGrade = [], setEnabled: setStudentTranscriptGradessStatus, setQueryKeys: setQueryForStudentTranscriptGrades } = useDataQuery(studentTranscriptGradesResource);
     const [isLoading, setIsLoading] = useState(false);
@@ -180,13 +180,11 @@ const FacultyGradeChange = () => {
         return students.map(data => <DropdownTypeaheadItem key={data.spridenId} value={data?.spridenId} label={data.spridenCurrName} />);
     }, [students]);
 
-    const grades = [
-        { id: "309ee8b1-40ea-41f9-842b-097c9c474955", value: "A++" },
-        { id: "0f342821-6590-41cf-89d7-b7815ea140f6", value: "A" },
-        { id: "1fd6e618-3c40-4777-8739-d73680149341", value: "A-" },
-        { id: "04ecc0f0-782c-4aa4-a542-e8702fc8b77b", value: "B" },
-        { id: "1ff6a45d-94df-4d3b-9998-c7d5c4c59ad4", value: "D" }
-    ];
+    if (!process.env.STUDENT_GRADES) {
+        const message = 'STUDENT_GRADES is not defined in environment!';
+        throw new Error(message);
+    }
+    const grades = JSON.parse(process.env.STUDENT_GRADES || '[]');
 
     const gradeItems = useMemo(() => {
         let availableGrades = grades;
@@ -472,10 +470,22 @@ function FacultyGradeChangeWithProviders() {
         queryFunction: userTokenDataConnectQuery
     }
 
+    if (!process.env.PIPELINE_GET_BANNER_TERMS) {
+        const message = 'PIPELINE_GET_BANNER_TERMS is not defined in environment!';
+        console.error(message);
+        throw new Error(message);
+    }
+
+    if (!process.env.PIPELINE_GET_GRADE_CHANGE_REASONS) {
+        const message = 'PIPELINE_GET_GRADE_CHANGE_REASONS is not defined in environment!';
+        console.error(message);
+        throw new Error(message);
+    }
+
     const config = [
         {
             ...options,
-            resource: 'get-term-codes-maestro'
+            resource: process.env.PIPELINE_GET_BANNER_TERMS
         }, {
             ...options,
             queryFunction: fetchFacultyAssignment,
@@ -494,7 +504,7 @@ function FacultyGradeChangeWithProviders() {
             resource: academicPeriodResource
         }, {
             ...options,
-            resource: 'get-grade-change-reasons'
+            resource: process.env.PIPELINE_GET_GRADE_CHANGE_REASONS
         }, {
             ...options,
             queryFunction: fetchStudentTranscriptGrades,

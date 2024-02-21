@@ -4,9 +4,14 @@
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
-export const resourceName = 'get-class-attendance-roster-maestro';
 
+export const resourceName = process.env.PIPELINE_GET_CLASS_ATTENDANCE_ROSTER;
 export async function fetchClassAttendanceRoster({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_CLASS_ATTENDANCE_ROSTER) {
+        const message = 'PIPELINE_GET_CLASS_ATTENDANCE_ROSTER is not defined in environment!!!';
+        console.error(message);
+        throw new Error(message);
+    }
     const { cardId, cardPrefix, ssbsectTermCodet = '', ssbsectCrnt = '' } = queryKeys;
     try {
         const start = new Date();

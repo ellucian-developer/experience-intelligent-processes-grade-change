@@ -3,9 +3,14 @@
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
-export const resourceName = 'get-persons-maestro';
 
+export const resourceName = process.env.PIPELINE_GET_PERSONS_INFO;
 export async function fetchPersonInformation({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_PERSONS_INFO) {
+        const message = 'PIPELINE_GET_PERSONS_INFO is not defined in environment!!!';
+        console.error(message);
+        throw new Error(message);
+    }
     const { cardId, cardPrefix, bannerIds = [] } = queryKeys;
 
     try {

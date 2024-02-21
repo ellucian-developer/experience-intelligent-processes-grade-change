@@ -36,6 +36,8 @@ For this POC we require the utilization of both BP APIs and EEDM APIs. Below are
 
 All the above mentioned DataConnect Pipelines can be found at : https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect
 
+Dataconnect Serverless APIs pipelines mentioned above are by default configured on the `.env` file. You also have to configure the <span style="color:red">STUDENT_GRADES</span> value on the `.env` file.
+
 Now let us see how to create these DataConnect Serverless APIs on Integration Designer
 
 ##### Step 1: Access the Integration Designer Card 
@@ -45,8 +47,6 @@ Now let us see how to create these DataConnect Serverless APIs on Integration De
 - In the card menu, select "View Details."
 
 ##### Step 2: Creating the DataConnect Serverless APIs
-
-
 
 - Create a package. Give a name and description. (Note: The package name must be globally unique).
 - Locate the "Add Pipeline" button. <p align="center">

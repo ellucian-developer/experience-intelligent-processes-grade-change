@@ -5,9 +5,14 @@
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
-export const resourceName = 'get-course-maintenance-maestro';
 
+export const resourceName = process.env.PIPELINE_GET_COURSE_MAINTENANCE;
 export async function fetchCourseMaintenance({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_COURSE_MAINTENANCE) {
+        const message = 'PIPELINE_GET_COURSE_MAINTENANCE is not defined in environment!!!';
+        console.error(message);
+        throw new Error(message);
+    }
     const { cardId, cardPrefix, crn, keyblckTermCode = '', id = '' } = queryKeys;
 
     try {

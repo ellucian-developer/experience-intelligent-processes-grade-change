@@ -5,9 +5,13 @@
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
-export const resourceName = 'get-academic-periods-maestro';
-
+export const resourceName = process.env.PIPELINE_GET_ACADEMIC_PERIODS;
 export async function fetchAcademicPeriods({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_ACADEMIC_PERIODS) {
+        const message = 'PIPELINE_GET_ACADEMIC_PERIODS is not defined in environment!!!';
+        console.error(message);
+        throw new Error(message);
+    }
     const { cardId, cardPrefix, code } = queryKeys;
 
     try {

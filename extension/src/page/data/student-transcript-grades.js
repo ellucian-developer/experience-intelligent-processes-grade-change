@@ -5,9 +5,14 @@
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
-export const resourceName = 'get-student-transcript-grades-maestro';
 
+export const resourceName = process.env.PIPELINE_GET_STUDENT_TRANSCRIPT_GRADES;
 export async function fetchStudentTranscriptGrades({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_STUDENT_TRANSCRIPT_GRADES) {
+        const message = 'PIPELINE_GET_STUDENT_TRANSCRIPT_GRADES is not defined in environment!!!';
+        console.error(message);
+        throw new Error(message);
+    }
     const { cardId, cardPrefix, studentGuid = '', academicPeriodId = '' } = queryKeys;
 
     try {

@@ -169,8 +169,6 @@ Upon acquiring all essential data for the Maestro workflow, proceed to invoke th
 | `student-transcript-grades/{id}`  | EEDM | When the registrar approves the grade change, then this API is invoked automatically via Maestro Action and updates the grade.   | <ul><li>`recordId`</li><li>`gradeId`</li><li>`changeReasonId`</li></ul> |Ethos Token |
 
 
-
-
 ## Path Design System
 
 For this extension, we have leveraged the following Path Design components to create a clean and minimal UI.

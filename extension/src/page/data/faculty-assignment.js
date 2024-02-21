@@ -5,9 +5,14 @@
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
-export const resourceName = 'get-faculty-assignment-maestro';
 
+export const resourceName = process.env.PIPELINE_GET_FACULTY_ASSIGNMENT;
 export async function fetchFacultyAssignment({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_FACULTY_ASSIGNMENT) {
+        const message = 'PIPELINE_GET_FACULTY_ASSIGNMENT is not defined in environment!!!';
+        console.error(message);
+        throw new Error(message);
+    }
     const { cardId, cardPrefix, keyblocTermCodeEff = '', id = '' } = queryKeys;
 
     try {
