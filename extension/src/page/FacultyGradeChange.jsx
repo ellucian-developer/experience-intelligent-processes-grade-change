@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl';
 
 import { Edit, ListView } from '@ellucian/ds-icons/lib';
 import { MultiDataQueryProvider, useDataQuery, userTokenDataConnectQuery } from '@ellucian/experience-extension-extras';
-import { useData, usePageControl, useUserInfo } from '@ellucian/experience-extension/extension-utilities';
+import { useData, usePageControl, useUserInfo } from '@ellucian/experience-extension-utils';
 import { Button, CircularProgress, Divider, DropdownTypeahead, DropdownTypeaheadItem, Grid, Snackbar, TextField, Typography, makeStyles } from '@ellucian/react-design-system/core';
 import { colorCtaIrisActive, colorCtaIrisBase, colorCtaIrisTint, colorTextNeutral250, colorTextNeutral400, spacing40 } from '@ellucian/react-design-system/core/styles/tokens';
 
@@ -30,7 +30,7 @@ const FacultyGradeChange = () => {
     const { getExtensionJwt } = useData();
     const { data: courses = [], isLoading: isFetchingCourse, setEnabled: setCourseQueryStatus, setQueryKeys: setQueryForCourse } = useDataQuery(facultyResource);
     const { data: students = [], isLoading: isFetchingStudent, setEnabled: setStudentQueryStatus, setQueryKeys: setQueryForStudent } = useDataQuery(attendanceResource);
-    const { data: student = [], isLoading: isFetchingStudentId, setEnabled: setStudentIdStatus, setQueryKeys: setQueryForStudentId } = useDataQuery(studentResource);
+    const { data: student = [], setEnabled: setStudentIdStatus, setQueryKeys: setQueryForStudentId } = useDataQuery(studentResource);
     const { data: courseMaintenance = [], isLoading: isFetchingCourseMaintenance, setEnabled: setCourseMaintenanceStatus, setQueryKeys: setQueryForCourseMaintenance } = useDataQuery(courseMaintenanceResource);
     const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery('get-grade-change-reasons');
     const { data: termCodes = [], isLoading: isFetchingTermCodes } = useDataQuery('get-term-codes-maestro');
@@ -42,7 +42,7 @@ const FacultyGradeChange = () => {
         message: ''
     });
 
-    const { data, setData, reset, post, errors, isDirty } = useForm({
+    const { data, setData, reset, post, errors } = useForm({
         term: "",
         facultyID: "",
         facultyName: "",
