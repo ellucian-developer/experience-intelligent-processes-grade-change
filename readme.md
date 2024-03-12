@@ -181,12 +181,6 @@ With Path Design System, you get to experience unparalleled cross-device compati
 
 ## Technologies
 
-#### authenticatedEthosFetch
-
-This extension makes use of the authenticatedEthosFetch function to call Banner Business Process APIs (BPAPIs) directly, without having to create and invoke a microservice that uses the Ethos API keys as an intermediary.
-
-[Read more](https://resources.elluciancloud.com/bundle/ellucian_experience_acn_use/page/c_extension_bpapi_oauth.html)
-
 #### Dataconnect Serverless APIs
 
 As the Faculty Grade Change experience is exclusively accessible to users with the Faculty role, direct utilization of authenticatedEthosFetch is not feasible, given that the majority of APIs are restricted to the experience-admin role. Consequently, we have developed all aforementioned APIs on Data Connect as serverless APIs, with the exception of the `workflow-instances` API.
