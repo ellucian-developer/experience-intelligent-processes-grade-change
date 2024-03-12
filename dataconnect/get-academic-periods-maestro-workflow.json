@@ -22,7 +22,7 @@
         "acceptVersions": [
           "16"
         ],
-        "cache": true,
+        "cache": false,
         "ignoreErrors": false
       }
     }

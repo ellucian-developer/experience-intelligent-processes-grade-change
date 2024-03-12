@@ -31,7 +31,7 @@
         "acceptVersions": [
           "16"
         ],
-        "cache": true,
+        "cache": false,
         "queryByPost": false,
         "ignoreErrors": false
       }
@@ -54,7 +54,7 @@
         ],
         "idFromPayload": "$.persons[*].person.id",
         "jsonPathTarget": "$.persons[*].person",
-        "cache": true,
+        "cache": false,
         "ignoreErrors": false
       }
     },

@@ -30,7 +30,7 @@
         "acceptVersions": [
           "16"
         ],
-        "cache": true,
+        "cache": false,
         "queryByPost": false,
         "ignoreErrors": false
       }
