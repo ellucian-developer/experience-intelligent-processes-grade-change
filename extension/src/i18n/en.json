@@ -5,12 +5,11 @@
 
     "fields.loading": "Loading...",
     "fields.term": "Term",
-    "fields.courseID": "Select Section CRN",
-    "fields.studentID": "Select Student",
+    "fields.sectionId": "Select Section CRN",
+    "fields.studentId": "Select Student",
     "fields.oldGrade": "Original Grade",
     "fields.newGrade": "Corrected Grade",
     "fields.facultyComment": "Any other details",
-    "fields.registrarID": "Select Registrar",
     "fields.reasonForGradeChange": "Reason for Grade Change",
 
     "fields.buttonCta": "Request for Approval",

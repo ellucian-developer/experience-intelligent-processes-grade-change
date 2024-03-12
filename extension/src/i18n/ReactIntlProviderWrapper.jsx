@@ -1,8 +1,8 @@
 // Copyright 2021-2023 Ellucian Company L.P. and its affiliates.
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl, IntlProvider } from 'react-intl';
-import PropTypes from 'prop-types';
 import { getMessages } from './intlUtility';
 
 export function withIntl(WrappedComponent) {
@@ -14,7 +14,6 @@ export function withIntl(WrappedComponent) {
             InjectedComponent = injectIntl(WrappedComponent);
         }
         render() {
-            console.log('Causing failure', this.props)
             const { userInfo: { locale } } = this.props;
 
             return (

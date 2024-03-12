@@ -12,26 +12,19 @@ export async function fetchAcademicPeriods({ authenticatedEthosFetch, queryKeys,
         console.error(message);
         throw new Error(message);
     }
-    const { cardId, cardPrefix, code } = queryKeys;
+    const { cardId, cardPrefix } = queryKeys;
 
     try {
         const start = new Date();
 
-        if (!code) {
-            return {
-                data: undefined
-            }
-        }
-
         const searchParameters = new URLSearchParams({
             cardId,
-            cardPrefix,
-            code
+            cardPrefix
         }).toString();
 
         const response = await authenticatedEthosFetch(`${resourceName}?${searchParameters}`, {
             headers: {
-                Accept: 'application/vnd.hedtech.integration.v0.0.3+json'
+                Accept: 'application/json'
             },
             signal
         });

@@ -13,12 +13,12 @@ export async function fetchStudentTranscriptGrades({ authenticatedEthosFetch, qu
         console.error(message);
         throw new Error(message);
     }
-    const { cardId, cardPrefix, studentGuid = '', academicPeriodId = '' } = queryKeys;
+    const { cardId, cardPrefix, studentId = '', sectionId = '' } = queryKeys;
 
     try {
         const start = new Date();
 
-        if (!studentGuid || !academicPeriodId) {
+        if (!studentId || !sectionId) {
             return {
                 data: undefined
             }
@@ -27,13 +27,13 @@ export async function fetchStudentTranscriptGrades({ authenticatedEthosFetch, qu
         const searchParameters = new URLSearchParams({
             cardId,
             cardPrefix,
-            studentGuid,
-            academicPeriodId
+            studentId,
+            sectionId
         }).toString();
 
         const response = await authenticatedEthosFetch(`${resourceName}?${searchParameters}`, {
             headers: {
-                Accept: 'application/vnd.hedtech.integration.v0.0.1+json'
+                Accept: 'application/json'
             },
             signal
         });

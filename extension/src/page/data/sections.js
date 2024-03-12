@@ -1,22 +1,24 @@
 /* eslint-disable max-depth */
 // Copyright 2021-2023 Ellucian Company L.P. and its affiliates.
 
+
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
 
-export const resourceName = process.env.PIPELINE_GET_CLASS_ATTENDANCE_ROSTER;
-export async function fetchClassAttendanceRoster({ authenticatedEthosFetch, queryKeys, signal }) {
-    if (!process.env.PIPELINE_GET_CLASS_ATTENDANCE_ROSTER) {
-        const message = 'PIPELINE_GET_CLASS_ATTENDANCE_ROSTER is not defined in environment!!!';
+export const resourceName = process.env.PIPELINE_GET_SECTIONS;
+export async function fetchSections({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_SECTIONS) {
+        const message = 'PIPELINE_GET_SECTIONS is not defined in environment!!!';
         console.error(message);
         throw new Error(message);
     }
-    const { cardId, cardPrefix, ssbsectTermCodet = '', ssbsectCrnt = '' } = queryKeys;
+    const { cardId, cardPrefix, academicPeriodId = '' } = queryKeys;
+
     try {
         const start = new Date();
 
-        if (!ssbsectTermCodet || !ssbsectCrnt) {
+        if (!academicPeriodId) {
             return {
                 data: undefined
             }
@@ -25,18 +27,16 @@ export async function fetchClassAttendanceRoster({ authenticatedEthosFetch, quer
         const searchParameters = new URLSearchParams({
             cardId,
             cardPrefix,
-            ssbsectTermCodet,
-            ssbsectCrnt
+            academicPeriodId
         }).toString();
 
         const response = await authenticatedEthosFetch(`${resourceName}?${searchParameters}`, {
             headers: {
-                Accept: 'application/vnd.hedtech.integration.v0.0.1+json'
+                Accept: 'application/json'
             },
             signal
         });
-        const allStudents = await response.json();
-        const data = allStudents.filter(student => student.rolled === 'Y');
+        const data = await response.json();
         const end = new Date();
         logger.debug(`fetch ${resourceName} time: ${end.getTime() - start.getTime()}`);
 

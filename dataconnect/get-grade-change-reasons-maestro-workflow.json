@@ -1,5 +1,5 @@
 {
-  "name": "get-term-codes-maestro",
+  "name": "get-grade-change-reasons-maestro-workflow",
   "parameters": [
     {
       "name": "ethosApiKey",
@@ -11,14 +11,18 @@
     "authType": "userToken",
     "httpVerb": "GET"
   },
-  "pipeline": ["Ethos Proxy Get"],
+  "pipeline": [
+    "Ethos Proxy Get"
+  ],
   "segments": {
     "Ethos Proxy Get": {
       "class": "ethosProxyGet",
       "config": {
-        "resource": "term-codes?limit=1000",
-        "acceptVersions": ["1"],
-        "cache": false,
+        "resource": "grade-change-reasons",
+        "acceptVersions": [
+          "6"
+        ],
+        "cache": true,
         "ignoreErrors": false
       }
     }

@@ -1,24 +1,22 @@
 /* eslint-disable max-depth */
 // Copyright 2021-2023 Ellucian Company L.P. and its affiliates.
 
-
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
 
-export const resourceName = process.env.PIPELINE_GET_COURSE_MAINTENANCE;
-export async function fetchCourseMaintenance({ authenticatedEthosFetch, queryKeys, signal }) {
-    if (!process.env.PIPELINE_GET_COURSE_MAINTENANCE) {
-        const message = 'PIPELINE_GET_COURSE_MAINTENANCE is not defined in environment!!!';
+export const resourceName = process.env.PIPELINE_SECTION_REGISTRATIONS;
+export async function fetchSectionRegistrations({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_SECTION_REGISTRATIONS) {
+        const message = 'PIPELINE_SECTION_REGISTRATIONS is not defined in environment!!!';
         console.error(message);
         throw new Error(message);
     }
-    const { cardId, cardPrefix, crn, keyblckTermCode = '', id = '' } = queryKeys;
-
+    const { cardId, cardPrefix, sectionId = '' } = queryKeys;
     try {
         const start = new Date();
 
-        if (!keyblckTermCode || !id || !crn) {
+        if (!sectionId) {
             return {
                 data: undefined
             }
@@ -27,14 +25,12 @@ export async function fetchCourseMaintenance({ authenticatedEthosFetch, queryKey
         const searchParameters = new URLSearchParams({
             cardId,
             cardPrefix,
-            crn,
-            keyblckTermCode,
-            id
+            sectionId
         }).toString();
 
         const response = await authenticatedEthosFetch(`${resourceName}?${searchParameters}`, {
             headers: {
-                Accept: 'application/vnd.hedtech.integration.v0.0.1+json'
+                Accept: 'application/json'
             },
             signal
         });

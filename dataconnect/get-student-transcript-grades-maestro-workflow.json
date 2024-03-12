@@ -1,0 +1,66 @@
+{
+  "name": "get-student-transcript-grades-maestro-workflow",
+  "parameters": [
+    {
+      "name": "ethosApiKey",
+      "type": "string",
+      "sensitive": true
+    },
+    {
+      "name": "studentId",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "sectionId",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "apiDefinition": {
+    "authType": "userToken",
+    "httpVerb": "GET"
+  },
+  "pipeline": [
+    "Fetch Grades from student-transcript-grades",
+    "JavaScript Transform",
+    "Fetch Grade"
+  ],
+  "segments": {
+    "Fetch Grades from student-transcript-grades": {
+      "class": "ethosProxyGetFilter",
+      "config": {
+        "resource": "student-transcript-grades",
+        "filter": "?criteria={\"student\":{\"id\":\"{{context.studentId}}\"}}",
+        "acceptVersions": [
+          "1"
+        ],
+        "cache": false,
+        "queryByPost": false,
+        "ignoreErrors": false
+      }
+    },
+    "JavaScript Transform": {
+      "class": "JavaScriptTransform",
+      "config": {
+        "pushUndefined": true,
+        "stopOnError": false,
+        "draft": false,
+        "code": "function transform (message, context) {\n  const gradeInformation = message.payload.filter(grade => grade.course.section.id);\n  message.payload = { \n    id: gradeInformation[0]?.id,\n    gradeId: gradeInformation[0]?.grade?.id\n  };\n  // Put your code here.\n  return message;\n}\n"
+      }
+    },
+    "Fetch Grade": {
+      "class": "ethosProxyGet",
+      "config": {
+        "resource": "grade-definitions",
+        "acceptVersions": [
+          "6"
+        ],
+        "idFromPayload": "$.gradeId",
+        "target": "gradeInfo",
+        "cache": false,
+        "ignoreErrors": false
+      }
+    }
+  }
+}

@@ -13,10 +13,10 @@ import { Button, CircularProgress, Divider, DropdownTypeahead, DropdownTypeahead
 import { colorCtaIrisActive, colorCtaIrisBase, colorCtaIrisTint, colorTextNeutral250, colorTextNeutral400, spacing40 } from '@ellucian/react-design-system/core/styles/tokens';
 
 import { resourceName as academicPeriodResource, fetchAcademicPeriods } from './data/academic-periods';
-import { resourceName as attendanceResource, fetchClassAttendanceRoster } from './data/class-attendance-roster';
-import { resourceName as courseMaintenanceResource, fetchCourseMaintenance } from './data/course-maintenance';
-import { resourceName as facultyResource, fetchFacultyAssignment } from './data/faculty-assignment';
-import { fetchStudentInformation, resourceName as studentResource } from './data/student-persons';
+import { fetchGradeChangeReasons, resourceName as gradeChangeReasonsResource } from './data/grade-change-reasons';
+import { fetchGradeDefinitions, resourceName as gradeDefinitionResource } from './data/grade-definitions';
+import { fetchSectionRegistrations, resourceName as sectionRegistrationResource } from './data/section-registrations';
+import { fetchSections, resourceName as sectionResource } from './data/sections';
 import { fetchStudentTranscriptGrades, resourceName as studentTranscriptGradesResource } from './data/student-transcript-grades';
 
 import useForm from './hooks/useForm';
@@ -28,14 +28,12 @@ const FacultyGradeChange = () => {
     const { setPageTitle } = usePageControl();
     const userInfo = useUserInfo();
     const { getExtensionJwt } = useData();
-    const { data: courses = [], isLoading: isFetchingCourse, setEnabled: setCourseQueryStatus, setQueryKeys: setQueryForCourse } = useDataQuery(facultyResource);
-    const { data: students = [], isLoading: isFetchingStudent, setEnabled: setStudentQueryStatus, setQueryKeys: setQueryForStudent } = useDataQuery(attendanceResource);
-    const { data: student = [], setEnabled: setStudentIdStatus, setQueryKeys: setQueryForStudentId } = useDataQuery(studentResource);
-    const { data: courseMaintenance = [], isLoading: isFetchingCourseMaintenance, setEnabled: setCourseMaintenanceStatus, setQueryKeys: setQueryForCourseMaintenance } = useDataQuery(courseMaintenanceResource);
-    const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery(process.env.PIPELINE_GET_GRADE_CHANGE_REASONS);
-    const { data: termCodes = [], isLoading: isFetchingTermCodes } = useDataQuery(process.env.PIPELINE_GET_BANNER_TERMS);
-    const { data: academicPeriods = [], setEnabled: setAcademicPeriodsStatus, setQueryKeys: setQueryForAcademicPeriods } = useDataQuery(academicPeriodResource);
-    const { data: studentGrade = [], setEnabled: setStudentTranscriptGradessStatus, setQueryKeys: setQueryForStudentTranscriptGrades } = useDataQuery(studentTranscriptGradesResource);
+    const { data: sections = [], isLoading: isFetchingSection, setEnabled: setSectionQueryStatus, setQueryKeys: setQueryForSection } = useDataQuery(sectionResource);
+    const { data: students = [], isLoading: isFetchingStudent, setEnabled: setStudentQueryStatus, setQueryKeys: setQueryForStudent } = useDataQuery(sectionRegistrationResource);
+    const { data: grades = [], isLoading: isFetchingGrades, setEnabled: setGradeQueryStatus, setQueryKeys: setQueryForGrade } = useDataQuery(gradeDefinitionResource);
+    const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery(gradeChangeReasonsResource);
+    const { data: termCodes = [], isLoading: isFetchingTermCodes } = useDataQuery(academicPeriodResource);
+    const { data: studentGrade = [], isLoading: isFetchingStudentTranscriptGrade, setEnabled: setStudentTranscriptGradesStatus, setQueryKeys: setQueryForStudentTranscriptGrades } = useDataQuery(studentTranscriptGradesResource);
     const [isLoading, setIsLoading] = useState(false);
     const [snackbarConfig, setSnackbarConfig] = useState({
         open: false,
@@ -46,20 +44,20 @@ const FacultyGradeChange = () => {
         term: "",
         facultyID: "",
         facultyName: "",
-        studentID: "",
+        studentId: "",
         studentName: "",
-        courseID: "",
-        courseName: "",
+        sectionId: "",
+        sectionCode: "",
         oldGrade: "",
         newGrade: "",
+        schemeId: "",
         facultyComment: "",
         gradeId: "",
-        studentGuid: "",
         academicPeriodId: "",
         gradeChangeCode: "",
         gradeRowId: ""
     }, [
-        'term', 'courseID', 'studentID',
+        'term', 'sectionId', 'studentId',
         'oldGrade', 'newGrade', 'gradeChangeCode'
     ])
 
@@ -77,94 +75,67 @@ const FacultyGradeChange = () => {
     }, [userInfo, data.facultyID]);
 
     useEffect(() => {
-        if (academicPeriods.length) {
-            const academicPeriodId = academicPeriods[0].id;
-            setData({ academicPeriodId })
-        }
-    }, [academicPeriods, data.term]);
-
-    useEffect(() => {
-        if (data.term && data.term.length > 5) {
-            setQueryForCourse({
-                keyblocTermCodeEff: data.term,
-                id: facultyErpID
-            });
-            setCourseQueryStatus(true)
-
-            setQueryForAcademicPeriods({ code: data.term });
-            setAcademicPeriodsStatus(true)
-        }
-    }, [data.term, facultyErpID]);
-
-    useEffect(() => {
-        setQueryForCourseMaintenance({ id: data.studentID, keyblckTermCode: data.term, crn: data.courseID });
-        setCourseMaintenanceStatus(true)
-
-        if (data.studentID) {
-            setQueryForStudentId({ bannerIds: [data.studentID] });
-            setStudentIdStatus(true)
-        }
-    }, [data.studentID]);
-
-    useEffect(() => {
-        if (data.studentGuid && data.academicPeriodId) {
-            setQueryForStudentTranscriptGrades({ studentGuid: data.studentGuid, academicPeriodId: data.academicPeriodId });
-            setStudentTranscriptGradessStatus(true)
-        }
-    }, [data.studentGuid, data.academicPeriodId]);
-
-    useEffect(() => {
-        if (courseMaintenance.length && data.studentID.length) {
-            const rolledGrades = courseMaintenance[0]?.SHRTCKG;
-            if (rolledGrades.length && data.oldGrade !== rolledGrades[0].grdeCodeFinal) {
-                setData({ oldGrade: rolledGrades[0].grdeCodeFinal })
+        if (data.term) {
+            const selectedTerm = termCodes.filter(item => item.code === data.term);
+            if (selectedTerm.length) {
+                setData({ academicPeriodId: selectedTerm[0].id });
+                setQueryForSection({
+                    academicPeriodId: selectedTerm[0].id
+                });
+                setSectionQueryStatus(true);
             }
-        }
-    }, [data.studentID, courseMaintenance]);
 
-    const setStudentInformation = (studentID) => {
-        if (studentID) {
-            const student = students.find(student => student.spridenId === studentID) || {};
+        }
+    }, [data.term]);
+
+    useEffect(() => {
+        if (data.studentId && data.sectionId) {
+            setQueryForStudentTranscriptGrades({ studentId: data.studentId, sectionId: data.sectionId });
+            setStudentTranscriptGradesStatus(true)
+        }
+    }, [data.studentId, data.sectionId]);
+
+    const setStudentInformation = (studentId) => {
+        if (studentId) {
+            const student = students.find(student => student.id === studentId) || {};
             if (Object.keys(student).length) {
-                setData({ studentID, studentName: student.spridenCurrName, oldGrade: '' })
+                setData({ studentId: student.id, studentName: student.name })
             } else {
-                setData({ studentID: '', studentName: '', oldGrade: '' })
+                setData({ studentId: '', studentName: '' })
             }
         }
     }
 
     useEffect(() => {
-        if (studentGrade.length) {
-            const gradeRowId = studentGrade[0].id;
-            setData({ gradeRowId })
+        if (Object.keys(studentGrade).length) {
+            const record = studentGrade;
+            setData({
+                gradeRowId: record.id,
+                oldGrade:  record.gradeInfo.grade.value
+            });
         }
-    }, [studentGrade, data.studentID]);
+    }, [studentGrade, data.studentId]);
 
     useEffect(() => {
-        if (data.term && data.courseID) {
-            const course = courses.find(course => course.crn === data.courseID) || {};
-            if (Object.keys(course).length) {
-                setData({ courseName: course.subjCode });
+        if (data.term && data.sectionId) {
+            const section = sections.find(section => section.id === data.sectionId) || {};
+            if (Object.keys(section).length) {
+                setData({
+                    sectionCode: section.code,
+                    schemeId: section.gradeScheme
+                });
+                setQueryForGrade({
+                    schemeId: section.gradeScheme
+                });
+                setGradeQueryStatus(true);
             }
-            setQueryForStudent({ ssbsectTermCodet: data.term, ssbsectCrnt: data.courseID });
-            setStudentQueryStatus(true)
-        }
-    }, [data.term, data.courseID]);
+            setQueryForStudent({
+                sectionId: data.sectionId
+            });
+            setStudentQueryStatus(true);
 
-    useEffect(() => {
-        if (data.gradeId) {
-            const grade = grades.find(grade => grade.id === data.gradeId) || "";
-            if (Object.keys(grade).length) {
-                setData({ newGrade: grade.value });
-            }
         }
-    }, [data.gradeId]);
-
-    useEffect(() => {
-        if (student.length) {
-            setData({ studentGuid: student[0].id })
-        }
-    }, [student, data.studentID]);
+    }, [data.term, data.sectionId]);
 
     setPageTitle(intl.formatMessage({ id: 'card.name' }));
 
@@ -172,28 +143,27 @@ const FacultyGradeChange = () => {
         return termCodes.map(data => <DropdownTypeaheadItem key={data.code} value={data?.code} label={data.code} />);
     }, [termCodes]);
 
-    const courseItems = useMemo(() => {
-        return courses.map(data => <DropdownTypeaheadItem key={data.crn} value={data?.crn} label={data.crn} />);
-    }, [courses]);
+    const sectionItems = useMemo(() => {
+        return sections.map(data => <DropdownTypeaheadItem key={data.code} value={data?.id} label={data.code} />);
+    }, [sections]);
 
     const studentItems = useMemo(() => {
-        return students.map(data => <DropdownTypeaheadItem key={data.spridenId} value={data?.spridenId} label={data.spridenCurrName} />);
+        return students.map(data => <DropdownTypeaheadItem key={data.id} value={data?.id} label={data.name} />);
     }, [students]);
 
-    if (!process.env.STUDENT_GRADES) {
-        const message = 'STUDENT_GRADES is not defined in environment!';
-        throw new Error(message);
+    const setGrade = (gradeId) => {
+        const [grade] = grades.filter(grade => grade.id === gradeId);
+        setData({ gradeId, newGrade: grade.code });
     }
-    const grades = JSON.parse(process.env.STUDENT_GRADES || '[]');
 
     const gradeItems = useMemo(() => {
         let availableGrades = grades;
         if (data.oldGrade) {
             availableGrades = availableGrades.filter(item => {
-                return item.value !== data.oldGrade;
+                return item.code !== data.oldGrade;
             });
         }
-        return availableGrades.map(data => <DropdownTypeaheadItem key={data.value} value={data?.id} label={data.value} />);
+        return availableGrades.map(data => <DropdownTypeaheadItem key={data.id} value={data?.id} label={data.code} />);
     }, [data.oldGrade, grades]);
 
     const gradeChangeCodes = useMemo(() => {
@@ -267,32 +237,32 @@ const FacultyGradeChange = () => {
                                     </DropdownTypeahead>
                                 </Grid>
                                 <Grid item xs={12} lg={6} className={classes.relative}>
-                                    {isFetchingCourse && <CircularProgress size={20} className={classes.isLoading} />}
+                                    {isFetchingSection && <CircularProgress size={20} className={classes.isLoading} />}
                                     <DropdownTypeahead
-                                        helperText={errors?.courseID}
-                                        error={Boolean(errors?.courseID?.length)}
-                                        id="courseID"
-                                        label={isFetchingCourse ? intl.formatMessage({ id: 'fields.loading' }) : intl.formatMessage({ id: 'fields.courseID' })}
-                                        required={!isFetchingCourse}
-                                        onChange={(courseID) => setData({ courseID })}
-                                        value={data?.courseID}
-                                        disabled={!data.term || isFetchingCourse}
+                                        helperText={errors?.sectionId}
+                                        error={Boolean(errors?.sectionId?.length)}
+                                        id="sectionId"
+                                        label={isFetchingSection ? intl.formatMessage({ id: 'fields.loading' }) : intl.formatMessage({ id: 'fields.sectionId' })}
+                                        required={!isFetchingSection}
+                                        onChange={(sectionId) => setData({ sectionId })}
+                                        value={data?.sectionId}
+                                        disabled={!data.term || isFetchingSection}
                                         fullWidth
                                     >
-                                        {courseItems}
+                                        {sectionItems}
                                     </DropdownTypeahead>
                                 </Grid>
                                 <Grid item xs={12} className={classes.relative}>
                                     {isFetchingStudent && <CircularProgress size={20} className={classes.isLoading} />}
                                     <DropdownTypeahead
-                                        helperText={errors?.studentID}
-                                        error={Boolean(errors?.studentID?.length)}
-                                        id="studentID"
-                                        value={data?.studentID}
-                                        onChange={(studentID) => setStudentInformation(studentID)}
-                                        disabled={!data.term || !data.courseID || isFetchingStudent}
+                                        helperText={errors?.studentId}
+                                        error={Boolean(errors?.studentId?.length)}
+                                        id="studentId"
+                                        value={data?.studentId}
+                                        onChange={(studentId) => setStudentInformation(studentId)}
+                                        disabled={!data.term ||!data.sectionId || isFetchingStudent}
                                         fullWidth
-                                        label={isFetchingStudent ? intl.formatMessage({ id: 'fields.loading' }) : intl.formatMessage({ id: 'fields.studentID' })}
+                                        label={isFetchingStudent ? intl.formatMessage({ id: 'fields.loading' }) : intl.formatMessage({ id: 'fields.studentId' })}
                                         required={!isFetchingStudent}
                                     >
                                         {studentItems}
@@ -322,12 +292,12 @@ const FacultyGradeChange = () => {
                         <Grid item xs={12} lg={9}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} lg={4} className={classes.relative}>
-                                    {isFetchingCourseMaintenance && <CircularProgress size={20} className={classes.isLoading} />}
+                                    {isFetchingStudentTranscriptGrade && <CircularProgress size={20} className={classes.isLoading} />}
                                     <TextField
                                         helperText={errors?.oldGrade}
                                         error={Boolean(errors?.oldGrade?.length)}
                                         id={`oldGrade`}
-                                        label={isFetchingCourseMaintenance ? intl.formatMessage({ id: 'fields.loading' }) : intl.formatMessage({ id: 'fields.oldGrade' })}
+                                        label={isFetchingStudentTranscriptGrade ? intl.formatMessage({ id: 'fields.loading' }) : intl.formatMessage({ id: 'fields.oldGrade' })}
                                         name="oldGrade"
                                         required
                                         value={data.oldGrade}
@@ -342,8 +312,8 @@ const FacultyGradeChange = () => {
                                         id="newGrade"
                                         label={intl.formatMessage({ id: 'fields.newGrade' })}
                                         value={data?.gradeId}
-                                        onChange={(gradeId) => setData({ gradeId })}
-                                        disabled={!data.term || !data.oldGrade}
+                                        onChange={(gradeId) => setGrade(gradeId)}
+                                        disabled={!data.sectionId}
                                         fullWidth
                                         required
                                     >
@@ -470,51 +440,43 @@ function FacultyGradeChangeWithProviders() {
         queryFunction: userTokenDataConnectQuery
     }
 
-    if (!process.env.PIPELINE_GET_BANNER_TERMS) {
-        const message = 'PIPELINE_GET_BANNER_TERMS is not defined in environment!';
-        console.error(message);
-        throw new Error(message);
-    }
-
-    if (!process.env.PIPELINE_GET_GRADE_CHANGE_REASONS) {
-        const message = 'PIPELINE_GET_GRADE_CHANGE_REASONS is not defined in environment!';
-        console.error(message);
-        throw new Error(message);
-    }
 
     const config = [
-        {
-            ...options,
-            resource: process.env.PIPELINE_GET_BANNER_TERMS
-        }, {
-            ...options,
-            queryFunction: fetchFacultyAssignment,
-            resource: facultyResource
-        }, {
-            ...options,
-            queryFunction: fetchClassAttendanceRoster,
-            resource: attendanceResource
-        }, {
-            ...options,
-            queryFunction: fetchStudentInformation,
-            resource: studentResource
-        }, {
-            ...options,
-            queryFunction: fetchAcademicPeriods,
-            resource: academicPeriodResource
-        }, {
-            ...options,
-            resource: process.env.PIPELINE_GET_GRADE_CHANGE_REASONS
-        }, {
-            ...options,
-            queryFunction: fetchStudentTranscriptGrades,
-            resource: studentTranscriptGradesResource
-        }, {
-            ...options,
-            queryFunction: fetchCourseMaintenance,
-            resource: courseMaintenanceResource,
-            cacheEnabled: false
-        }
+      {
+        ...options,
+        queryFunction: fetchAcademicPeriods,
+        resource: academicPeriodResource
+      },
+      {
+        ...options,
+        queryFunction: fetchSections,
+        resource: sectionResource
+      },
+      {
+        ...options,
+        queryFunction: fetchSectionRegistrations,
+        resource: sectionRegistrationResource
+      },
+      {
+        ...options,
+        queryFunction: fetchGradeDefinitions,
+        resource: gradeDefinitionResource
+      },
+      {
+        ...options,
+        queryFunction: fetchAcademicPeriods,
+        resource: academicPeriodResource
+      },
+      {
+        ...options,
+          queryFunction: fetchGradeChangeReasons,
+        resource: gradeChangeReasonsResource
+      },
+      {
+        ...options,
+        queryFunction: fetchStudentTranscriptGrades,
+        resource: studentTranscriptGradesResource
+      }
     ];
 
     return <MultiDataQueryProvider options={config}>

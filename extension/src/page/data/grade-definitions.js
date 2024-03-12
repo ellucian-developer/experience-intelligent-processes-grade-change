@@ -1,24 +1,22 @@
 /* eslint-disable max-depth */
 // Copyright 2021-2023 Ellucian Company L.P. and its affiliates.
 
-
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
 
-export const resourceName = process.env.PIPELINE_GET_FACULTY_ASSIGNMENT;
-export async function fetchFacultyAssignment({ authenticatedEthosFetch, queryKeys, signal }) {
-    if (!process.env.PIPELINE_GET_FACULTY_ASSIGNMENT) {
-        const message = 'PIPELINE_GET_FACULTY_ASSIGNMENT is not defined in environment!!!';
+export const resourceName = process.env.PIPELINE_GET_GRADE_DEFINITIONS;
+export async function fetchGradeDefinitions({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_GRADE_DEFINITIONS) {
+        const message = 'PIPELINE_GET_GRADE_DEFINITIONS is not defined in environment!!!';
         console.error(message);
         throw new Error(message);
     }
-    const { cardId, cardPrefix, keyblocTermCodeEff = '', id = '' } = queryKeys;
-
+    const { cardId, cardPrefix, schemeId = '' } = queryKeys;
     try {
         const start = new Date();
 
-        if (!keyblocTermCodeEff || !id) {
+        if (!schemeId) {
             return {
                 data: undefined
             }
@@ -27,13 +25,12 @@ export async function fetchFacultyAssignment({ authenticatedEthosFetch, queryKey
         const searchParameters = new URLSearchParams({
             cardId,
             cardPrefix,
-            keyblocTermCodeEff,
-            id
+            schemeId
         }).toString();
 
         const response = await authenticatedEthosFetch(`${resourceName}?${searchParameters}`, {
             headers: {
-                Accept: 'application/vnd.hedtech.integration.v0.0.1+json'
+                Accept: 'application/json'
             },
             signal
         });

@@ -1,13 +1,19 @@
 /* eslint-disable max-depth */
 // Copyright 2021-2023 Ellucian Company L.P. and its affiliates.
 
+
 import log from 'loglevel';
 const logger = log.getLogger('default');
 
-export const resourceName = 'get-term-codes-maestro';
-
-export async function fetchTermCodes({ authenticatedEthosFetch, queryKeys, signal }) {
+export const resourceName = process.env.PIPELINE_GET_GRADE_CHANGE_REASONS;
+export async function fetchGradeChangeReasons({ authenticatedEthosFetch, queryKeys, signal }) {
+    if (!process.env.PIPELINE_GET_GRADE_CHANGE_REASONS) {
+        const message = 'PIPELINE_GET_GRADE_CHANGE_REASONS is not defined in environment!!!';
+        console.error(message);
+        throw new Error(message);
+    }
     const { cardId, cardPrefix } = queryKeys;
+
     try {
         const start = new Date();
 
@@ -18,7 +24,7 @@ export async function fetchTermCodes({ authenticatedEthosFetch, queryKeys, signa
 
         const response = await authenticatedEthosFetch(`${resourceName}?${searchParameters}`, {
             headers: {
-                Accept: 'application/vnd.hedtech.integration.v0.0.1+json'
+                Accept: 'application/json'
             },
             signal
         });

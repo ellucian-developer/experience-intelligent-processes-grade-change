@@ -8,8 +8,6 @@ It comprises code for a Experience Card and Page along with an associated Maestr
 - The Maestro workflow, in turn, executes the grade change process using the information provided by the faculty through the Experience Page.
 
 
-> Kindly note that the Maestro-Experience extension is tailored exclusively for Banner only.
-
 ## Faculty Grade Change Form - Experience Card
 
 The experience card features a straightforward hyperlink leading to the Grade Change Form.
@@ -40,7 +38,7 @@ Please refer the **Start Parameters** image under the Maestro Workflow section.
         "id": "f07c9938-69c0-46b1-8db7-dc029b7a204e", // workflow ID
         "variables": {
             "term": {
-                "value": "201860"
+                "value": "2024/SP"
             },
             "facultyID": {
                 "value": "A00042621"
@@ -48,41 +46,41 @@ Please refer the **Start Parameters** image under the Maestro Workflow section.
             "facultyName": {
                 "value": "Andrew"
             },
-            "studentID": {
-                "value": "A00037747"
+            "studentId": {
+                "value": "c4ba9260-7fdb-4cf8-9a72-34c132897af7"
             },
             "studentName": {
-                "value": "Johnson, Bill"
+                "value": "Frank Gehring"
             },
-            "courseID": {
-                "value": "2"
+            "sectionId": {
+                "value": "19226edc-93b7-4e9a-987c-cbd3c7e0debd"
             },
-            "courseName": {
-                "value": "MATH"
+            "sectionCode": {
+                "value": "WMG-100-01"
             },
             "oldGrade": {
-                "value": "D"
+                "value": "B"
             },
             "newGrade": {
-                "value": "A++"
+                "value": "A"
             },
             "facultyComment": {
-                "value": "Test"
+                "value": "Testing"
+            },
+            "schemeId": {
+                "value": "64fef697-8a89-4cb0-9f64-c7e9089d6b34"  // Internal Use
             },
             "gradeId": {
-                "value": "309ee8b1-40ea-41f9-842b-097c9c474955" // Internal Use
-            },
-            "studentGuid": {
-                "value": "cac7d5a4-150f-4e06-b68f-e6c8c9fb8e70" // Internal Use
+                "value": "e2404374-e15a-444f-8fd8-7e7aed39d431" // Internal Use
             },
             "academicPeriodId": {
-                "value": "53d1f1d7-2535-4051-ad48-e021c5f9e1eb" // Internal Use
+                "value": "5fd7ba09-4c07-440c-847b-6fde566b0d84" // Internal Use
             },
             "gradeChangeCode": {
-                "value": "89ce21f7-9cc3-4455-8c36-00556d3535bf" // Internal Use
+                "value": "41d913fe-a9c9-4404-8e9c-53bdbb7caf03" // Internal Use
             },
             "gradeRowId": {
-                "value": "ed9863eb-1260-4e58-be22-1516fa1dad65" // Internal Use
+                "value": "384dca8d-d7aa-49c8-b394-0a1493abc379" // Internal Use
             }
         }
     }
@@ -108,17 +106,19 @@ Under the start section, we have configure all the above mentioned API variables
 
 ## APIs
 
-This extension necessitated the utilization of both BP APIs and EEDM APIs, as a straightforward solution was not readily available within either framework. The following is a compilation of the APIs employed in this context
+This extension necessitated the utilization of EEDM APIs. The following is a compilation of the APIs employed in this context
 
-- [academic-periods](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_academic_periods_16.1.0/page/academic-periods.html)
-- [class-attendance-roster](https://resources.elluciancloud.com/bundle/banner_api_business_api_class_attendance_roster_1.0.0/page/class-attendance-roster.html)
-- [term-codes](https://resources.elluciancloud.com/bundle/banner_api_business_api_term_codes_1.0.0/page/term-codes.html) 
-- [course-maintenance](https://resources.elluciancloud.com/bundle/banner_api_business_api_course_maintenance_1.1.0/page/course-maintenance.html) 
-- [faculty-assignment](https://resources.elluciancloud.com/bundle/banner_api_business_api_faculty_assignment_1.0.0/page/faculty-assignment.html)
-- [grade-change-reasons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html)
-- [persons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_persons_12.6.0/page/persons.html)
-- [student-transcript-grades](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html)
-- [student-transcript-grades-adjustments](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_adjustments_1.0.0/page/student-transcript-grades-adjustments.html)
+| Endpoint              | Banner                                                                                                             | Colleague             |
+|-----------------------|--------------------------------------------------------------------------------------------------------------------|-----------------------|
+| academic-periods | https://resources.elluciancloud.com/bundle/banner_api_ethos_api_academic_periods_16.1.0/page/academic-periods.html | https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_academic_periods_16.1.0/page/academic-periods.html |
+| grade-change-reasons | https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html                                                                                                                   |https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html|
+| sections | https://resources.elluciancloud.com/bundle/banner_api_ethos_api_sections_16.1.0/page/sections.html | https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_sections_16.1.0/page/sections.html |
+| section-registrations | https://resources.elluciancloud.com/bundle/banner_api_erp_api_section_registrations_1.0.0/page/section-registrations.html | https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_section_registrations_16.1.0/page/section-registrations.html |
+| persons | https://resources.elluciancloud.com/bundle/banner_api_ethos_api_persons_12.6.0/page/persons.html | https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_persons_12.6.0/page/persons.html |
+| student-transcript-grades | https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html | https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html |
+| grade-definitions | https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html | https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html |
+| student-transcript-grades-adjustments | https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_adjustments_1.0.0/page/student-transcript-grades-adjustments.html | https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_student_transcript_grades_adjustments_1.0.0/page/student-transcript-grades-adjustments.html |
+
 - [workflow-instances (Maestro Workflow API)](https://resources.elluciancloud.com/bundle/services_maestro_api_api_workflow_instances_1.0.0/page/workflow-instances.html)
 
 
@@ -143,7 +143,7 @@ Below mentioned APIs are fired as soon as the page is loaded
 
 | Endpoint    | API Type | Description |
 | ------------------------------------------------------- |-------------| ------- |
-| `term-codes`  | BPAPI | Retrieves the list of term codes available    |
+| `academic-periods`  | EEDM | Retrieves the list of term codes available    |
 | `grade-change-reasons`    | EEDM | Retrieves the catalogue of reasons available for faculty members to designate when submitting a request for a grade change    |
 
 ### Dependent APIs
@@ -152,12 +152,10 @@ As soon as the faculty keys in the term code the following data flow gets invoke
 
 | Endpoint    | API Type | Description | Dependent On | Data to Pick | Authentication Type |
 | -------- | ------- |--------------|-------------------|-------------------|--------------|
-| `faculty-assignment`  | BPAPI | Upon the faculty's input of the term code, this API will be utilized to retrieve a comprehensive list of all available Course Reference Numbers (CRNs) associated with the specified term.   | <ul><li>`term`</li></ul> | <ul><li>`crn`</li></ul> | User Token |
-| `academic-periods`  | EEDM | Hit this API to get the current academic period GUID with the selected term   | <ul><li>`term`</li></ul> | <ul><li>`id`</li></ul> |User Token |
-| `class-attendance-roster`  | BPAPI | Given both the `term` and `CRN` parameters, it is necessary to query the `class-attendance-roster` API to gather information on all actively enrolled students.    | <ul><li>`term`</li><li>`crn`</li></ul> |<ul><li>`spridenId`</li><li>`spridenCurrName`</li></ul> |User Token |
-| `course-maintenance`  | BPAPI | To retrieve the current grade of a user, invoke this API with the specified dependent data.   | <ul><li>`term`</li><li>`crn`</li><li>`studentBannerId`</li></ul> | <ul><li>`SHRTCKG[0].grdeCodeFinal`</li></ul> | User Token |
-| `persons`  | EEDM | In order to get the student's GUID, we have to invoke this API    | <ul><li>`studentBannerId`</li></ul> | <ul><li>`id`</li></ul> |User Token |
+| `sections`  | EEDM | Upon the faculty's input of the term code, this API will be utilized to retrieve a comprehensive list of all available sections associated with the specified term.   | <ul><li>`academicPeriodId`</li></ul> | <ul><li>`id`</li><li>`code`</li><li>`gradeSchemes[0].id`</li></ul> | User Token |
+| `section-registrations`  | EEDM | Now based on the section ID we can gather information on all actively enrolled students.    | <ul><li>`sectionId`</li></ul> |<ul><li>`registrant.id`</li></ul> |User Token |
 | `student-transcript-grades`  | EEDM | To obtain the current grade of a student, utilize this API by providing the current academic period GUID and the student GUID as necessary parameters.    | <ul><li>`studentGUID`</li><li>`academicPeriodGUID`</li></ul> | <ul><li>`id`</li></ul> |User Token |
+| `grade-definitions`  | EEDM | To fetch the list of all accepted grade, this API needs to be called and can be filtered out based on the gradeScheme we retrived from sections API   | <ul><li>`schemeId`</li></ul> | <ul><li>`id`</li><li>`grade.value`</li></ul> |User Token |
 
 Upon acquiring all essential data for the Maestro workflow, proceed to invoke the `workflow-instances` Maestro API along with the workflow ID.
 

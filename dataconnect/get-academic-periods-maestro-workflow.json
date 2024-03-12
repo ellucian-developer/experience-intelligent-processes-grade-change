@@ -1,5 +1,5 @@
 {
-  "name": "get-grade-change-reasons",
+  "name": "get-academic-periods-maestro-workflow",
   "parameters": [
     {
       "name": "ethosApiKey",
@@ -18,11 +18,11 @@
     "Ethos Proxy Get": {
       "class": "ethosProxyGet",
       "config": {
-        "resource": "grade-change-reasons",
+        "resource": "academic-periods?limit=1000",
         "acceptVersions": [
-          "6"
+          "16"
         ],
-        "cache": false,
+        "cache": true,
         "ignoreErrors": false
       }
     }

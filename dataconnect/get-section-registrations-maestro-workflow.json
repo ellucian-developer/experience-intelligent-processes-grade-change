@@ -1,0 +1,71 @@
+{
+  "name": "get-section-registrations-maestro-workflow",
+  "parameters": [
+    {
+      "name": "ethosApiKey",
+      "type": "string",
+      "sensitive": true
+    },
+    {
+      "name": "sectionId",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "apiDefinition": {
+    "authType": "userToken",
+    "httpVerb": "GET"
+  },
+  "pipeline": [
+    "Ethos Proxy Get with Filter",
+    "JavaScript Transform",
+    "Ethos Proxy Get Array",
+    "Transform"
+  ],
+  "segments": {
+    "Ethos Proxy Get with Filter": {
+      "class": "ethosProxyGetFilter",
+      "config": {
+        "resource": "section-registrations",
+        "filter": "?criteria={\"section\":{\"id\":\"{{context.sectionId}}\"}}&limit=500",
+        "acceptVersions": [
+          "16"
+        ],
+        "cache": true,
+        "queryByPost": false,
+        "ignoreErrors": false
+      }
+    },
+    "JavaScript Transform": {
+      "class": "JavaScriptTransform",
+      "config": {
+        "pushUndefined": true,
+        "stopOnError": false,
+        "draft": false,
+        "code": "function transform (message, context) {\n  let personIds = message.payload\n    .map(record => record?.registrant?.id);\n  // message.payload = {};\n  personIds = Array.from(new Set(personIds));\n  personIds = personIds.map(record => ({ person: {id: record}}));\n  message.payload = {}\n  message.payload.persons = personIds;\n  return message;\n}\n"
+      }
+    },
+    "Ethos Proxy Get Array": {
+      "class": "ethosProxyGetArray",
+      "config": {
+        "resource": "persons",
+        "acceptVersions": [
+          "12"
+        ],
+        "idFromPayload": "$.persons[*].person.id",
+        "jsonPathTarget": "$.persons[*].person",
+        "cache": true,
+        "ignoreErrors": false
+      }
+    },
+    "Transform": {
+      "class": "JavaScriptTransform",
+      "config": {
+        "pushUndefined": true,
+        "stopOnError": false,
+        "draft": false,
+        "code": "function transform (message, context) {\n  \n  message.payload = message.payload.persons.map(({person}) => ({\n    id: person.id,\n    name: person.names[0]?.fullName\n  }))\n  // Put your code here.\n  return message;\n}\n"
+      }
+    }
+  }
+}

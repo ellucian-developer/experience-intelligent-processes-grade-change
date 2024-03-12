@@ -21,22 +21,20 @@ For this POC, we'll be using two type of users.
 # DataConnect Serverless APIs
 ## For Experience Extension
 
-For this POC we require the utilization of both BP APIs and EEDM APIs. Below are the list of all the APIs we need to create as DataConnect Serverless APIs for the experience extension to consume.
+For this POC we require the utilization of EEDM APIs. Below are the list of all the APIs we need to create as DataConnect Serverless APIs for the experience extension to consume.
 
 | API | API Type | Maestro API Name |
 |:-----|:--------|:-----------------|
-|[academic-periods](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_academic_periods_16.1.0/page/academic-periods.html) | EEDM | [get-academic-periods-maestro](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-academic-periods-maestro_v0.0.3.json) |
-| [class-attendance-roster](https://resources.elluciancloud.com/bundle/banner_api_business_api_class_attendance_roster_1.0.0/page/class-attendance-roster.html) | BP | [get-class-attendance-roster-maestro](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-class-attendance-roster-maestro_v0.0.1.json)|
-| [term-codes](https://resources.elluciancloud.com/bundle/banner_api_business_api_term_codes_1.0.0/page/term-codes.html) | BP | [get-term-codes-maestro](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-term-codes-maestro_v1.0.0.json)|
-| [course-maintenance](https://resources.elluciancloud.com/bundle/banner_api_business_api_course_maintenance_1.1.0/page/course-maintenance.html) | BP |  [get-course-maintenance-maestro](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-course-maintenance-maestro_v0.0.1.json) |
-| [faculty-assignment](https://resources.elluciancloud.com/bundle/banner_api_business_api_faculty_assignment_1.0.0/page/faculty-assignment.html) | BP | [get-faculty-assignment-maestro](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-faculty-assignment-maestro_v0.0.1.json) |
-| [grade-change-reasons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html) | EEDM | [get-grade-change-reasons](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-grade-change-reasons_v1.0.0.json) |
-| [persons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_persons_12.6.0/page/persons.html) | EEDM | [get-persons-maestro](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-persons-maestro_v0.0.1.json) |
-| [student-transcript-grades](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html) | EEDM | [get-student-transcript-grades-maestro](https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect/get-student-transcript-grades-maestro_v0.0.1.json) |
+|[academic-periods](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_academic_periods_16.1.0/page/academic-periods.html) | EEDM | [get-academic-periods-maestro-workflow](./dataconnect/get-academic-periods-maestro-workflow.json) |
+| [grade-definitions](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html) | EEDM | [get-grade-definitions-maestro-workflow](./dataconnect/get-grade-definitions-maestro-workflow.json) |
+| [sections](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_sections_16.1.0/page/sections.html) | BP | [get-sections-maestro-workflow](./dataconnect/get-sections-maestro-workflow.json)|
+| [section-registrations](https://resources.elluciancloud.com/bundle/banner_api_erp_api_section_registrations_1.0.0/page/section-registrations.html) | BP | [get-section-registrations-maestro-workflow](./dataconnect/get-section-registrations-maestro-workflow.json)|
+| [grade-change-reasons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html) | EEDM | [get-grade-change-reasons-maestro-workflow](./dataconnect/get-grade-change-reasons-maestro-workflow.json) |
+| [student-transcript-grades](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html) | EEDM | [get-student-transcript-grades-maestro-workflow](./dataconnect/get-student-transcript-grades-maestro-workflow.json) |
 
 All the above mentioned DataConnect Pipelines can be found at : https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect
 
-Dataconnect Serverless APIs pipelines mentioned above are by default configured on the `.env` file. You also have to configure the <span style="color:red">STUDENT_GRADES</span> value on the `.env` file.
+Dataconnect Serverless APIs pipelines mentioned above are by default configured on the `.env` file. 
 
 Now let us see how to create these DataConnect Serverless APIs on Integration Designer
 
@@ -291,7 +289,9 @@ Note: Please adjust the mapping based on your implementation.
 Basically for this extension we'll be requiring two configuration settings.
 
 1. Workflow ID - For invoking the Maestro Workflow
-2. EthosAPIKey - For calling the DataConnect Serverless APIs
+2. EthosAPIKey - For calling the DataConnect Serverless APIs.
+   
+> Kindly remember that the key you enter on EthosAPIKey should also be configured on the PUT - student-transcript-grades action
 
 <p align="center">
     <img src="./docs/images/configuration.png" width="700px"/>
@@ -331,7 +331,7 @@ The following JSON body is what we'll be submitting to Maestro Workflow API ie, 
         "id": "f07c9938-69c0-46b1-8db7-dc029b7a204e", // workflow ID
         "variables": {
             "term": {
-                "value": "201860"
+                "value": "2024/SP"
             },
             "facultyID": {
                 "value": "A00042621"
@@ -339,41 +339,41 @@ The following JSON body is what we'll be submitting to Maestro Workflow API ie, 
             "facultyName": {
                 "value": "Andrew"
             },
-            "studentID": {
-                "value": "A00037747"
+            "studentId": {
+                "value": "c4ba9260-7fdb-4cf8-9a72-34c132897af7"
             },
             "studentName": {
-                "value": "Johnson, Bill"
+                "value": "Frank Gehring"
             },
-            "courseID": {
-                "value": "2"
+            "sectionId": {
+                "value": "19226edc-93b7-4e9a-987c-cbd3c7e0debd"
             },
-            "courseName": {
-                "value": "MATH"
+            "sectionCode": {
+                "value": "WMG-100-01"
             },
             "oldGrade": {
-                "value": "D"
+                "value": "B"
             },
             "newGrade": {
-                "value": "A++"
+                "value": "A"
             },
             "facultyComment": {
-                "value": "Test"
+                "value": "Testing"
+            },
+            "schemeId": {
+                "value": "64fef697-8a89-4cb0-9f64-c7e9089d6b34"  // Internal Use
             },
             "gradeId": {
-                "value": "309ee8b1-40ea-41f9-842b-097c9c474955" // Internal Use
-            },
-            "studentGuid": {
-                "value": "cac7d5a4-150f-4e06-b68f-e6c8c9fb8e70" // Internal Use
+                "value": "e2404374-e15a-444f-8fd8-7e7aed39d431" // Internal Use
             },
             "academicPeriodId": {
-                "value": "53d1f1d7-2535-4051-ad48-e021c5f9e1eb" // Internal Use
+                "value": "5fd7ba09-4c07-440c-847b-6fde566b0d84" // Internal Use
             },
             "gradeChangeCode": {
-                "value": "89ce21f7-9cc3-4455-8c36-00556d3535bf" // Internal Use
+                "value": "41d913fe-a9c9-4404-8e9c-53bdbb7caf03" // Internal Use
             },
             "gradeRowId": {
-                "value": "ed9863eb-1260-4e58-be22-1516fa1dad65" // Internal Use
+                "value": "384dca8d-d7aa-49c8-b394-0a1493abc379" // Internal Use
             }
         }
     }
