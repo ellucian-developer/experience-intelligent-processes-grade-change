@@ -1,25 +1,31 @@
 {
   "name": "put-student-transcript-grades-adjustments",
-  "parameters": [
-    {
-      "name": "recordId",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "gradeId",
-      "type": "string",
-      "required": true
-    },
-    {
-      "name": "changeReasonId",
-      "type": "string",
-      "required": true
-    }
-  ],
   "apiDefinition": {
     "authType": "ethosToken",
-    "httpVerb": "PUT"
+    "httpVerb": "PUT",
+    "inputSchema": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "type": "object",
+      "properties": {
+        "gradeRowId": {
+          "type": "string",
+          "title": "Grade Row Id"
+        },
+        "gradeId": {
+          "type": "string",
+          "title": "Grade Id"
+        },
+        "changeReasonId": {
+          "type": "string",
+          "title": "Change Reason Id"
+        }
+      },
+      "required": [
+        "gradeRowId",
+        "gradeId",
+        "changeReasonId"
+      ]
+    }
   },
   "pipeline": [
     "Ethos Proxy Auth",
@@ -36,14 +42,14 @@
         "pushUndefined": true,
         "stopOnError": false,
         "draft": false,
-        "code": "function transform (message, context) {\n  // Put your code here.\n  context.set(\"token\", message.header.ethosApiAuthToken);\n  message.payload.data = {\n  \"id\": context.recordId,\n  \"detail\": {\n    \"grade\": {\n        \"id\": context.gradeId\n    },\n    \"changeReason\": {\n        \"id\": context.changeReasonId\n    }\n  }\n}\n  return message;\n}\n"
+        "code": "function transform (message, context) {\n  // Put your code here.\n  context.set(\"token\", message.header.ethosApiAuthToken);\n  context.set('id', message.payload.gradeRowId);\n  message.payload.data = {\n  \"id\": message.payload.gradeRowId,\n  \"detail\": {\n    \"grade\": {\n        \"id\": message.payload.gradeId\n    },\n    \"changeReason\": {\n        \"id\": message.payload.changeReasonId\n    }\n  }\n}\n  return message;\n}\n"
       }
     },
     "HTTP Request": {
       "class": "http-fitting",
       "config": {
         "method": "PUT",
-        "uri": "https://integrate.elluciancloud.com/api/student-transcript-grades/{{{context.recordId}}}",
+        "uri": "https://integrate.elluciancloud.com/api/student-transcript-grades/{{context.id}}",
         "cache": false,
         "stream": false,
         "headers": {

@@ -13,12 +13,12 @@ export async function fetchSections({ authenticatedEthosFetch, queryKeys, signal
         console.error(message);
         throw new Error(message);
     }
-    const { cardId, cardPrefix, academicPeriodId = '' } = queryKeys;
+    const { cardId, cardPrefix, instructorId = '', academicPeriodId = '' } = queryKeys;
 
     try {
         const start = new Date();
 
-        if (!academicPeriodId) {
+        if (!instructorId || !academicPeriodId) {
             return {
                 data: undefined
             }
@@ -27,6 +27,7 @@ export async function fetchSections({ authenticatedEthosFetch, queryKeys, signal
         const searchParameters = new URLSearchParams({
             cardId,
             cardPrefix,
+            instructorId,
             academicPeriodId
         }).toString();
 
@@ -40,10 +41,12 @@ export async function fetchSections({ authenticatedEthosFetch, queryKeys, signal
         const end = new Date();
         logger.debug(`fetch ${resourceName} time: ${end.getTime() - start.getTime()}`);
 
-        if (data?.errors) {
+        if (Number(response.status) !== 200) {
             return {
-                dataError: data.errors,
-                data: []
+                error: {
+                    message: data?.message,
+                    statusCode: response.status
+                }
             }
         }
 

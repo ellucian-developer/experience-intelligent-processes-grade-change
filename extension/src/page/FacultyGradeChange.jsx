@@ -20,7 +20,6 @@ import { fetchSections, resourceName as sectionResource } from './data/sections'
 import { fetchStudentTranscriptGrades, resourceName as studentTranscriptGradesResource } from './data/student-transcript-grades';
 
 import useForm from './hooks/useForm';
-let facultyErpID;
 
 const FacultyGradeChange = () => {
     const intl = useIntl();
@@ -28,12 +27,12 @@ const FacultyGradeChange = () => {
     const { setPageTitle } = usePageControl();
     const userInfo = useUserInfo();
     const { getExtensionJwt } = useData();
-    const { data: sections = [], isLoading: isFetchingSection, setEnabled: setSectionQueryStatus, setQueryKeys: setQueryForSection } = useDataQuery(sectionResource);
-    const { data: students = [], isLoading: isFetchingStudent, setEnabled: setStudentQueryStatus, setQueryKeys: setQueryForStudent } = useDataQuery(sectionRegistrationResource);
-    const { data: grades = [], isLoading: isFetchingGrades, setEnabled: setGradeQueryStatus, setQueryKeys: setQueryForGrade } = useDataQuery(gradeDefinitionResource);
+    const { data: sections = [], isLoading: isFetchingSection, dataError: sectionsError, setEnabled: setSectionQueryStatus, setQueryKeys: setQueryForSection } = useDataQuery(sectionResource);
+    const { data: students = [], isLoading: isFetchingStudent, dataError: studentsError, setEnabled: setStudentQueryStatus, setQueryKeys: setQueryForStudent } = useDataQuery(sectionRegistrationResource);
+    const { data: grades = [], isLoading: isFetchingGrades, dataError: gradesError, setEnabled: setGradeQueryStatus, setQueryKeys: setQueryForGrade } = useDataQuery(gradeDefinitionResource);
     const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery(gradeChangeReasonsResource);
     const { data: termCodes = [], isLoading: isFetchingTermCodes } = useDataQuery(academicPeriodResource);
-    const { data: studentGrade = [], isLoading: isFetchingStudentTranscriptGrade, setEnabled: setStudentTranscriptGradesStatus, setQueryKeys: setQueryForStudentTranscriptGrades } = useDataQuery(studentTranscriptGradesResource);
+    const { data: studentGrade = [], isLoading: isFetchingStudentTranscriptGrade, dataError: studentGradeError, setEnabled: setStudentTranscriptGradesStatus, setQueryKeys: setQueryForStudentTranscriptGrades } = useDataQuery(studentTranscriptGradesResource);
     const [isLoading, setIsLoading] = useState(false);
     const [snackbarConfig, setSnackbarConfig] = useState({
         open: false,
@@ -42,6 +41,7 @@ const FacultyGradeChange = () => {
 
     const { data, setData, reset, post, errors } = useForm({
         term: "",
+        facultyGuid: "",
         facultyID: "",
         facultyName: "",
         studentId: "",
@@ -54,12 +54,53 @@ const FacultyGradeChange = () => {
         facultyComment: "",
         gradeId: "",
         academicPeriodId: "",
-        gradeChangeCode: "",
+        changeReasonId: "",
         gradeRowId: ""
     }, [
         'term', 'sectionId', 'studentId',
-        'oldGrade', 'newGrade', 'gradeChangeCode'
+        'oldGrade', 'newGrade', 'changeReasonId'
     ])
+
+    useEffect(() => {
+        if (sectionsError && Object.keys(sectionsError).length > 0) {
+            setSnackbarConfig({
+                open: true,
+                message: intl.formatMessage({ id: `errors.${sectionsError?.message}` })
+            });
+            return;
+        }
+
+        if (studentsError && Object.keys(studentsError).length > 0) {
+            setSnackbarConfig({
+                open: true,
+                message: intl.formatMessage({ id: `errors.${studentsError?.message}` })
+            });
+            return;
+        }
+
+        if (gradesError && Object.keys(gradesError).length > 0) {
+            setSnackbarConfig({
+                open: true,
+                message: intl.formatMessage({ id: `errors.${gradesError?.message}` })
+            });
+            return;
+        }
+
+        if (gradesError && Object.keys(gradesError).length > 0) {
+            setSnackbarConfig({
+                open: true,
+                message: intl.formatMessage({ id: `errors.${gradesError?.message}` })
+            });
+            return;
+        }
+
+        if (studentGradeError && Object.keys(studentGradeError).length > 0) {
+            setSnackbarConfig({
+                open: true,
+                message: intl.formatMessage({ id: `errors.${studentGradeError?.message}` })
+            });
+        }
+    }, [sectionsError, studentsError, gradesError, studentGradeError]);
 
     useEffect(() => {
         (async () => {
@@ -67,9 +108,10 @@ const FacultyGradeChange = () => {
                 const token = await getExtensionJwt();
                 const decoded = jwtDecode(token);
 
-                facultyErpID = decoded.user.erpId;
+                const facultyID = decoded.user.erpId;
+                const facultyGuid = decoded.user.id;
                 const facultyName = userInfo.firstName;
-                setData({ facultyID: facultyErpID, facultyName })
+                setData({ facultyID, facultyName, facultyGuid })
             }
         })();
     }, [userInfo, data.facultyID]);
@@ -78,9 +120,11 @@ const FacultyGradeChange = () => {
         if (data.term) {
             const selectedTerm = termCodes.filter(item => item.code === data.term);
             if (selectedTerm.length) {
-                setData({ academicPeriodId: selectedTerm[0].id });
+                const academicPeriodId = selectedTerm[0].id;
+                setData({ academicPeriodId });
                 setQueryForSection({
-                    academicPeriodId: selectedTerm[0].id
+                    academicPeriodId,
+                    instructorId: data.facultyGuid
                 });
                 setSectionQueryStatus(true);
             }
@@ -107,7 +151,7 @@ const FacultyGradeChange = () => {
     }
 
     useEffect(() => {
-        if (Object.keys(studentGrade).length) {
+        if (Object.keys(studentGrade).length && data.studentId) {
             const record = studentGrade;
             setData({
                 gradeRowId: record.id,
@@ -144,7 +188,7 @@ const FacultyGradeChange = () => {
     }, [termCodes]);
 
     const sectionItems = useMemo(() => {
-        return sections.map(data => <DropdownTypeaheadItem key={data.code} value={data?.id} label={data.code} />);
+        return sections?.map(data => <DropdownTypeaheadItem key={data.code} value={data?.id} label={data.code} />);
     }, [sections]);
 
     const studentItems = useMemo(() => {
@@ -166,7 +210,7 @@ const FacultyGradeChange = () => {
         return availableGrades.map(data => <DropdownTypeaheadItem key={data.id} value={data?.id} label={data.code} />);
     }, [data.oldGrade, grades]);
 
-    const gradeChangeCodes = useMemo(() => {
+    const changeReasonIds = useMemo(() => {
         return changeCodes.map(data => <DropdownTypeaheadItem key={data.code} value={data?.id} label={data.title} />);
     }, [grades]);
 
@@ -323,17 +367,17 @@ const FacultyGradeChange = () => {
                                 <Grid item xs={12} lg={4} className={classes.relative}>
                                     {isFetchingCodes && <CircularProgress size={20} className={classes.isLoading} />}
                                     <DropdownTypeahead
-                                        helperText={errors?.gradeChangeCode}
-                                        error={Boolean(errors?.gradeChangeCode?.length)}
-                                        id="gradeChangeCode"
+                                        helperText={errors?.changeReasonId}
+                                        error={Boolean(errors?.changeReasonId?.length)}
+                                        id="changeReasonId"
                                         label={isFetchingCodes ? intl.formatMessage({ id: 'fields.loading' }) : intl.formatMessage({ id: 'fields.reasonForGradeChange' })}
-                                        value={data?.gradeChangeCode}
-                                        onChange={(gradeChangeCode) => setData({ gradeChangeCode })}
+                                        value={data?.changeReasonId}
+                                        onChange={(changeReasonId) => setData({ changeReasonId })}
                                         disabled={isFetchingCodes}
                                         fullWidth
                                         required={!isFetchingCodes}
                                     >
-                                        {gradeChangeCodes}
+                                        {changeReasonIds}
                                     </DropdownTypeahead>
                                 </Grid>
                                 <Grid item xs={12}>
@@ -362,7 +406,7 @@ const FacultyGradeChange = () => {
                         <Button
                             color="primary"
                             onClick={submit}
-                            disabled={isLoading}
+                            disabled={isLoading || !data.studentId || !data.oldGrade || !data.newGrade || !data.sectionId || !data.term || !data.changeReasonId}
                             className={classes.cta}
                         >
                             {isLoading && <CircularProgress color="primary" size={20} className={classes.progress} />}
@@ -436,6 +480,7 @@ const useStyles = makeStyles(() => ({
 
 function FacultyGradeChangeWithProviders() {
     const options = {
+        cacheEnabled: false,
         queryParameters: { acceptVersion: '1' },
         queryFunction: userTokenDataConnectQuery
     }
@@ -474,6 +519,7 @@ function FacultyGradeChangeWithProviders() {
       },
       {
         ...options,
+        cacheEnabled: false,
         queryFunction: fetchStudentTranscriptGrades,
         resource: studentTranscriptGradesResource
       }

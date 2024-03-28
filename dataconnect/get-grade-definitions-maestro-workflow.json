@@ -38,7 +38,7 @@
         "pushUndefined": true,
         "stopOnError": false,
         "draft": false,
-        "code": "function transform (message, context) {\n  \n  message.payload = message.payload\n    .filter(grade => grade.scheme.id === context.schemeId && grade.credit === 'full')\n    .map(grade => ({\n      id: grade.id,\n      code: grade.grade.value\n    }));\n  // Put your code here.\n  return message;\n}\n"
+        "code": "function transform (message, context) {\n  const grades = message.payload\n    .filter(grade => grade.scheme.id === context.schemeId)\n    .filter(grade => {\n      if (grade?.credit) {\n        return grade.credit === 'full';\n      }\n      \n      return true;\n    })\n    .map(grade => ({\n      id: grade.id,\n      code: grade.grade.value\n    }));\n    \n  if (!Array.isArray(grades) || !grades.length) {\n    context.set(\"__httpStatusCode\", 400);\n    context.set(\"__httpStatusMessage\", { message: \"NO_GRADES_FOUND\"});\n    throw new Error('NO_GRADES_FOUND');\n  }\n  message.payload = grades;\n  return message;\n}\n"
       }
     }
   }

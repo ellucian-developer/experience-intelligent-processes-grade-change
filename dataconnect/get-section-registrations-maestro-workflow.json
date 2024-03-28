@@ -42,7 +42,7 @@
         "pushUndefined": true,
         "stopOnError": false,
         "draft": false,
-        "code": "function transform (message, context) {\n  let personIds = message.payload\n    .map(record => record?.registrant?.id);\n  // message.payload = {};\n  personIds = Array.from(new Set(personIds));\n  personIds = personIds.map(record => ({ person: {id: record}}));\n  message.payload = {}\n  message.payload.persons = personIds;\n  return message;\n}\n"
+        "code": "function transform (message, context) {\n  let personIds = message.payload\n    ?.map(record => record?.registrant?.id);\n  \n  if (!Array.isArray(personIds) || !personIds.length) {\n    context.set(\"__httpStatusCode\", 400);\n    context.set(\"__httpStatusMessage\", { message: \"NO_REGISTERED_STUDENTS\"});\n    throw new Error('NO_REGISTERED_STUDENTS');\n  }\n  \n  personIds = Array.from(new Set(personIds));\n  personIds = personIds.map(record => ({ person: {id: record}}));\n  \n  message.payload = {\n    persons : personIds\n  }\n  return message;\n}\n"
       }
     },
     "Ethos Proxy Get Array": {
@@ -64,7 +64,7 @@
         "pushUndefined": true,
         "stopOnError": false,
         "draft": false,
-        "code": "function transform (message, context) {\n  \n  message.payload = message.payload.persons.map(({person}) => ({\n    id: person.id,\n    name: person.names[0]?.fullName\n  }))\n  // Put your code here.\n  return message;\n}\n"
+        "code": "function transform (message, context) {\n  message.payload = message.payload.persons.map(({person}) => ({\n    id: person.id,\n    name: person.names[0]?.fullName\n  }));\n  return message;\n}\n"
       }
     }
   }

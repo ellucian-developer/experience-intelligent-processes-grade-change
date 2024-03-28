@@ -40,11 +40,12 @@ export async function fetchStudentTranscriptGrades({ authenticatedEthosFetch, qu
         const data = await response.json();
         const end = new Date();
         logger.debug(`fetch ${resourceName} time: ${end.getTime() - start.getTime()}`);
-
-        if (data?.errors) {
+        if (Number(response.status) !== 200) {
             return {
-                dataError: data.errors,
-                data: []
+                error: {
+                    message: data?.message,
+                    statusCode: response.status
+                }
             }
         }
 

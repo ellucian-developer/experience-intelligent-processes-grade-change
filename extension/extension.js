@@ -1,12 +1,12 @@
 module.exports = {
-    "name": "ExperienceFacultyGradeChangeMaestro",
+    "name": "Experience Faculty Grade Change Maestro",
     "publisher": "Ellucian",
     "cards": [{
-        "type": "ExperienceFacultyGradeChangeMaestroCard",
+        "type": "Experience Faculty Grade Change Maestro",
         "source": "./src/cards/ExperienceFacultyGradeChangeMaestroCard",
         "title": "Faculty Grade Change",
         "displayCardType": "Faculty Grade Change",
-        "description": "This is an introductory card to the Ellucian Experience SDK",
+        "description": "This card helps faculty to change their student grade",
         configuration: {
             client: [
                 {

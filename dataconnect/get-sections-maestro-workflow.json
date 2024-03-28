@@ -7,6 +7,11 @@
       "sensitive": true
     },
     {
+      "name": "instructorId",
+      "type": "string",
+      "required": true
+    },
+    {
       "name": "academicPeriodId",
       "type": "string",
       "required": true
@@ -25,7 +30,7 @@
       "class": "ethosProxyGetFilter",
       "config": {
         "resource": "sections",
-        "filter": "?criteria={\"reportingAcademicPeriod\":{\"id\": \"{{context.academicPeriodId}}\"}}",
+        "filter": "?instructor={\"instructor\":{\"id\":\"{{context.instructorId}}\"}}",
         "payloadTargetPath": "sections",
         "acceptVersions": [
           "16"
@@ -41,7 +46,7 @@
         "pushUndefined": true,
         "stopOnError": false,
         "draft": false,
-        "code": "function transform (message, context) {\n  message.payload = message.payload.sections.map(record => {\n    let gradeScheme = '';\n    if (record.gradeSchemes?.length) {\n      gradeScheme = record.gradeSchemes[0]?.id;\n    }\n    return {\n      gradeScheme,\n      id: record.id,\n      code: record.code\n    };\n  });\n  // Put your code here.\n  return message;\n}\n"
+        "code": "function transform (message, context) {\n  const sections = message.payload?.sections\n  ?.filter(record => record?.reportingAcademicPeriod?.id === context.academicPeriodId)\n  ?.map(record => {\n    let gradeScheme = '';\n    if (record.gradeSchemes?.length) {\n      gradeScheme = record.gradeSchemes[0]?.id;\n    }\n    return {\n      gradeScheme,\n      id: record.id,\n      code: record.code\n    };\n  });\n  \n  if (!Array.isArray(sections) || !sections?.length) {\n    context.set(\"__httpStatusCode\", 400);\n    context.set(\"__httpStatusMessage\", { message: \"NO_SECTIONS_FOUND\"});\n    throw new Error('NO_SECTIONS_FOUND');\n  }\n  message.payload = sections;\n  // Put your code here.\n  return message;\n}\n"
       }
     }
   }

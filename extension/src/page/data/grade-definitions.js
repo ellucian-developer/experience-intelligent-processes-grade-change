@@ -37,6 +37,14 @@ export async function fetchGradeDefinitions({ authenticatedEthosFetch, queryKeys
         const data = await response.json();
         const end = new Date();
         logger.debug(`fetch ${resourceName} time: ${end.getTime() - start.getTime()}`);
+        if (Number(response.status) !== 200) {
+            return {
+                error: {
+                    message: data?.message,
+                    statusCode: response.status
+                }
+            }
+        }
 
         if (data?.errors) {
             return {

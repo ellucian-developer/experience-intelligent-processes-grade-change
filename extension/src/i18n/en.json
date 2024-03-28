@@ -5,7 +5,7 @@
 
     "fields.loading": "Loading...",
     "fields.term": "Term",
-    "fields.sectionId": "Select Section CRN",
+    "fields.sectionId": "Select Course Section",
     "fields.studentId": "Select Student",
     "fields.oldGrade": "Original Grade",
     "fields.newGrade": "Corrected Grade",
@@ -24,6 +24,11 @@
     "home.registrarHelperText": "Please select the registrar information",
 
     "messages.snackbarSuccess": "Grade Change Request submitted successfully.",
-    "messages.snackbarFailure": "Something went wrong."
+    "messages.snackbarFailure": "Something went wrong.",
+
+    "errors.NO_SECTIONS_FOUND": "No sections found for the instructor and selected term",
+    "errors.NO_REGISTERED_STUDENTS": "No registered students found for the selected course section",
+    "errors.NO_GRADES_FOUND": "No grades found for the selected section",
+    "errors.NO_ORIGINAL_GRADE_FOUND": "No original grade found for the selected student"
   }
 }

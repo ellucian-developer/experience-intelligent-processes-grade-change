@@ -46,7 +46,7 @@
         "pushUndefined": true,
         "stopOnError": false,
         "draft": false,
-        "code": "function transform (message, context) {\n  const gradeInformation = message.payload.filter(grade => grade.course.section.id);\n  message.payload = { \n    id: gradeInformation[0]?.id,\n    gradeId: gradeInformation[0]?.grade?.id\n  };\n  // Put your code here.\n  return message;\n}\n"
+        "code": "function transform (message, context) {\n  const grades = message.payload\n    .filter(grade => grade.course.section.id === context.sectionId);\n  \n  if (!Array.isArray(grades) || !grades.length) {\n    context.set(\"__httpStatusCode\", 400);\n    context.set(\"__httpStatusMessage\", { message: \"NO_ORIGINAL_GRADE_FOUND\"});\n    throw new Error('NO_ORIGINAL_GRADE_FOUND');\n  }\n  message.payload = { \n    id: grades[0]?.id,\n    gradeId: grades[0]?.grade?.id\n  };\n  return message;\n}\n"
       }
     },
     "Fetch Grade": {

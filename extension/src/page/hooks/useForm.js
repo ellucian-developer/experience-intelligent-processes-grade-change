@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { useData, useCardInfo } from '@ellucian/experience-extension-utils';
+import { useCardInfo, useData } from '@ellucian/experience-extension-utils';
 
 const useForm = (
     initialValue,

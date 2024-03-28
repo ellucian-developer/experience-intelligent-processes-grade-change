@@ -25,21 +25,20 @@
     }
   },
   "pipeline": [
-    "Ethos Proxy Get with Filter",
+    "Get Registrar",
     "Object Mapper"
   ],
   "segments": {
-    "Ethos Proxy Get with Filter": {
-      "class": "ethosProxyGetFilter",
+    "Get Registrar": {
+      "class": "ethosProxyGet",
       "config": {
         "resource": "persons",
-        "filter": "?criteria=%7B%22credentials%22%3A%5B%7B%22type%22%3A%22bannerId%22%2C%22value%22%3A%22{{context.id}}%22%7D%5D%7D",
-        "payloadTargetPath": "persons",
         "acceptVersions": [
           "12"
         ],
+        "idFromContext": "id",
+        "target": "persons",
         "cache": false,
-        "queryByPost": false,
         "ignoreErrors": false
       }
     },
@@ -52,7 +51,7 @@
           {
             "source": [
               {
-                "path": "persons.0.id",
+                "path": "persons.id",
                 "default": "",
                 "isArray": false
               }
