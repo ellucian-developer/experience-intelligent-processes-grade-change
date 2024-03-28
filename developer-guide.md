@@ -189,13 +189,11 @@ For `Update Student Grade`, following should be the action definition
 
 ```JSON
 {
-  "input": [],
-  "output": [],
-  "queryParameters": [
+  "input": [
     {
-      "name": "recordId",
+      "name": "gradeRowId",
       "type": "string",
-      "label": "Record ID",
+      "label": "Grade Row ID",
       "isRequired": true,
       "description": "The global identifier of the student transcript grade."
     },
@@ -209,11 +207,13 @@ For `Update Student Grade`, following should be the action definition
     {
       "name": "changeReasonId",
       "type": "string",
-      "label": "Grade Change Reason ID",
+      "label": "Change Reason ID",
       "isRequired": true,
       "description": "The global identifier of the change reasons."
     }
-  ]
+  ],
+  "output": [],
+  "queryParameters": []
 }
 ```
 
@@ -360,6 +360,9 @@ The following JSON body is what we'll be submitting to Maestro Workflow API ie, 
             "facultyComment": {
                 "value": "Testing"
             },
+            "facultyGuid": {
+                "value": "be93c1b3-61e9-46d0-a506-5abee5e425b4"  // Internal Use
+            },
             "schemeId": {
                 "value": "64fef697-8a89-4cb0-9f64-c7e9089d6b34"  // Internal Use
             },
@@ -369,7 +372,7 @@ The following JSON body is what we'll be submitting to Maestro Workflow API ie, 
             "academicPeriodId": {
                 "value": "5fd7ba09-4c07-440c-847b-6fde566b0d84" // Internal Use
             },
-            "gradeChangeCode": {
+            "changeReasonId": {
                 "value": "41d913fe-a9c9-4404-8e9c-53bdbb7caf03" // Internal Use
             },
             "gradeRowId": {

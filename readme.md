@@ -67,6 +67,9 @@ Please refer the **Start Parameters** image under the Maestro Workflow section.
             "facultyComment": {
                 "value": "Testing"
             },
+            "facultyGuid": {
+                "value": "be93c1b3-61e9-46d0-a506-5abee5e425b4"  // Internal Use
+            },
             "schemeId": {
                 "value": "64fef697-8a89-4cb0-9f64-c7e9089d6b34"  // Internal Use
             },
@@ -76,7 +79,7 @@ Please refer the **Start Parameters** image under the Maestro Workflow section.
             "academicPeriodId": {
                 "value": "5fd7ba09-4c07-440c-847b-6fde566b0d84" // Internal Use
             },
-            "gradeChangeCode": {
+            "changeReasonId": {
                 "value": "41d913fe-a9c9-4404-8e9c-53bdbb7caf03" // Internal Use
             },
             "gradeRowId": {
