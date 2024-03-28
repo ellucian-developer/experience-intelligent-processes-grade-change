@@ -18,21 +18,21 @@ segments:
           type: String
           label: Faculty Name
           isPerson: false
-        - name: studentID
+        - name: studentId
           type: String
-          label: Student ID
+          label: Student Id
           isPerson: false
         - name: studentName
           type: String
           label: Student Name
           isPerson: false
-        - name: courseID
+        - name: sectionId
           type: String
-          label: Course ID
+          label: Section ID
           isPerson: false
-        - name: courseName
+        - name: sectionCode
           type: String
-          label: Course Name
+          label: Section Code
           isPerson: false
         - name: oldGrade
           type: String
@@ -52,18 +52,21 @@ segments:
         - name: academicPeriodId
           type: String
           label: Academic Period Id
-        - name: studentGuid
+        - name: schemeId
           type: String
-          label: Student Guid
+          label: Scheme Id
         - name: gradeRowId
           type: String
           label: Grade Row Id
         - name: gradeId
           type: String
           label: Grade Id
-        - name: gradeChangeCode
+        - name: changeReasonId
           type: String
-          label: Grade Change Code
+          label: Change Reason Id
+        - name: facultyGuid
+          type: String
+          label: Faculty Guid
     out:
       - action_c03c00ff-dd54-4897-b62c-95e385cf63f5
   action_c03c00ff-dd54-4897-b62c-95e385cf63f5:
@@ -72,11 +75,11 @@ segments:
     name: Get Registrar
     config:
       code: GETREGISTRAR
-      version: 2.0.0
+      version: 3.0.0
       isBaseline: false
       parameters:
         - inputParameterName: id
-          staticValue: A00037750
+          staticValue: d3c566d6-c830-427d-b64e-5ba063212f8c
           mapType: staticValue
       inputs: []
     in:
@@ -91,23 +94,14 @@ segments:
       approvalView:
         approvalDetails: ''
         approvalSelectedData:
-          - displayName: Faculty ID
-            name: facultyID
-            type: String
           - displayName: Faculty Name
             name: facultyName
-            type: String
-          - displayName: Student ID
-            name: studentID
             type: String
           - displayName: Student Name
             name: studentName
             type: String
-          - displayName: Course ID
-            name: courseID
-            type: String
-          - displayName: Course Name
-            name: courseName
+          - displayName: Section Code
+            name: sectionCode
             type: String
           - displayName: Old Grade
             name: oldGrade
@@ -121,19 +115,18 @@ segments:
           - displayName: Term
             name: term
             type: String
-          - name: __approval_task_33c526a0_a2b1_40f9_8085_595ec09a93d2_comment
-            displayName: Request for Grade Change Comment
-        isCommentEnabled: true
+        isCommentEnabled: false
       userTaskActions:
         - label: Approve
           value: approve
         - label: Deny
           value: deny
+      assigneeType: data
       assignee: __action_c03c00ff_dd54_4897_b62c_95e385cf63f5_id
       sendExperienceNotification: true
       expNotificationMessage:
-        assignment: A task for {workflowName} has been assigned to you.
-        dueDate: A task for {workflowName} is due for you.
+        assignment: A task for {workflowName} has been assigned.
+        dueDate: A task for {workflowName} is overdue.
       expNotificationIcon:
         assignment: requirements
         dueDate: requirements
@@ -141,25 +134,25 @@ segments:
       - action_c03c00ff-dd54-4897-b62c-95e385cf63f5
     out:
       - split-task_fd23dcaf-4af6-4541-995e-0c1eb64b3de6
-  action_aeb17ea8-db94-49ca-84ac-1880540f3273:
+  action_b4ec9852-406d-4ca9-b2c4-57ee85f72a66:
     class: action
     classDisplayName: Action
     name: Update Student Grade
     config:
       code: UPDATESTUDENTGRADE
-      version: 16.0.0
+      version: 25.0.0
       isBaseline: false
-      parameters:
-        - inputParameterName: recordId
+      parameters: []
+      inputs:
+        - inputSchemaName: gradeRowId
           processVariableName: gradeRowId
           mapType: processVariable
-        - inputParameterName: gradeId
+        - inputSchemaName: gradeId
           processVariableName: gradeId
           mapType: processVariable
-        - inputParameterName: changeReasonId
-          processVariableName: gradeChangeCode
+        - inputSchemaName: changeReasonId
+          processVariableName: changeReasonId
           mapType: processVariable
-      inputs: []
     in:
       - split-task_fd23dcaf-4af6-4541-995e-0c1eb64b3de6
     out:
@@ -177,13 +170,13 @@ segments:
       assignee: __requestedBy
       sendExperienceNotification: true
       expNotificationMessage:
-        assignment: A task for {workflowName} has been assigned to you.
-        dueDate: A task for {workflowName} is due for you.
+        assignment: A task for {workflowName} has been assigned.
+        dueDate: A task for {workflowName} is overdue.
       expNotificationIcon:
         assignment: requirements
         dueDate: requirements
     in:
-      - action_aeb17ea8-db94-49ca-84ac-1880540f3273
+      - action_b4ec9852-406d-4ca9-b2c4-57ee85f72a66
     out:
       - end_d4c8b57b-16d7-44e1-bc03-eee0397a7ac6
   end_d4c8b57b-16d7-44e1-bc03-eee0397a7ac6:
@@ -206,8 +199,8 @@ segments:
       assignee: __requestedBy
       sendExperienceNotification: true
       expNotificationMessage:
-        assignment: A task for {workflowName} has been assigned to you.
-        dueDate: A task for {workflowName} is due for you.
+        assignment: A task for {workflowName} has been assigned.
+        dueDate: A task for {workflowName} is overdue.
       expNotificationIcon:
         assignment: requirements
         dueDate: requirements
@@ -230,7 +223,7 @@ segments:
     in:
       - approval-task_33c526a0-a2b1-40f9-8085-595ec09a93d2
     out:
-      - node: action_aeb17ea8-db94-49ca-84ac-1880540f3273
+      - node: action_b4ec9852-406d-4ca9-b2c4-57ee85f72a66
         condition: default
       - node: manual-task_10c48adb-cd52-4529-9952-800900af2245
         condition: __approval_task_33c526a0_a2b1_40f9_8085_595ec09a93d2_outcome == 'deny'
