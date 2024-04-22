@@ -112,8 +112,7 @@ const FacultyGradeChange = () => {
 
                 const facultyID = decoded.user.erpId;
                 const facultyGuid = decoded.user.id;
-                const facultyName = userInfo.firstName;
-                setData({ facultyID, facultyName, facultyGuid });
+                setData({ facultyID, facultyGuid });
 
                 setFacultyKeys({ id: facultyGuid })
                 setFacultyStatus(true);
@@ -122,7 +121,11 @@ const FacultyGradeChange = () => {
     }, [userInfo, data.facultyID]);
 
     useEffect(() => {
-        if (Object.keys(faculty).length && !Object.keys(facultyError).length) {
+        if (
+            Object.keys(faculty).length &&
+            !Object.keys(facultyError).length &&
+            !data.facultyName?.length
+        ) {
             const { fullName } = faculty;
             setData({ facultyName: fullName });
         }

@@ -44,7 +44,7 @@ Please refer the **Start Parameters** image under the Maestro Workflow section.
                 "value": "A00042621"
             },
             "facultyName": {
-                "value": "Andrew"
+                "value": "Andrew G Garner"
             },
             "studentId": {
                 "value": "c4ba9260-7fdb-4cf8-9a72-34c132897af7"
@@ -155,6 +155,7 @@ As soon as the faculty keys in the term code the following data flow gets invoke
 
 | Endpoint    | API Type | Description | Dependent On | Data to Pick | Authentication Type |
 | -------- | ------- |--------------|-------------------|-------------------|--------------|
+| `persons`  | EEDM | Since we would like to show Faculty's full name on Approval screen, we're fetching person's full name using this API.   | <ul><li>`id`</li></ul> | <ul><li>`fullName`</li></ul> | User Token |
 | `sections`  | EEDM | Upon the faculty's input of the term code, this API will be utilized to retrieve a comprehensive list of all available sections associated with the specified term.   | <ul><li>`academicPeriodId`</li></ul> | <ul><li>`id`</li><li>`code`</li><li>`gradeSchemes[0].id`</li></ul> | User Token |
 | `section-registrations`  | EEDM | Now based on the section ID we can gather information on all actively enrolled students.    | <ul><li>`sectionId`</li></ul> |<ul><li>`registrant.id`</li></ul> |User Token |
 | `student-transcript-grades`  | EEDM | To obtain the current grade of a student, utilize this API by providing the current academic period GUID and the student GUID as necessary parameters.    | <ul><li>`studentGUID`</li><li>`academicPeriodGUID`</li></ul> | <ul><li>`id`</li></ul> |User Token |
