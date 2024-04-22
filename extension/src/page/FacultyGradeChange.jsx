@@ -15,6 +15,7 @@ import { colorCtaIrisActive, colorCtaIrisBase, colorCtaIrisTint, colorTextNeutra
 import { resourceName as academicPeriodResource, fetchAcademicPeriods } from './data/academic-periods';
 import { fetchGradeChangeReasons, resourceName as gradeChangeReasonsResource } from './data/grade-change-reasons';
 import { fetchGradeDefinitions, resourceName as gradeDefinitionResource } from './data/grade-definitions';
+import { fetchPersons, resourceName as personsResource } from './data/persons';
 import { fetchSectionRegistrations, resourceName as sectionRegistrationResource } from './data/section-registrations';
 import { fetchSections, resourceName as sectionResource } from './data/sections';
 import { fetchStudentTranscriptGrades, resourceName as studentTranscriptGradesResource } from './data/student-transcript-grades';
@@ -32,6 +33,7 @@ const FacultyGradeChange = () => {
     const { data: grades = [], isLoading: isFetchingGrades, dataError: gradesError, setEnabled: setGradeQueryStatus, setQueryKeys: setQueryForGrade } = useDataQuery(gradeDefinitionResource);
     const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery(gradeChangeReasonsResource);
     const { data: termCodes = [], isLoading: isFetchingTermCodes } = useDataQuery(academicPeriodResource);
+    const { data: faculty = {}, isLoading: isFetchingFaculty, dataError: facultyError = {}, setEnabled: setFacultyStatus, setQueryKeys: setFacultyKeys } = useDataQuery(personsResource);
     const { data: studentGrade = [], isLoading: isFetchingStudentTranscriptGrade, dataError: studentGradeError, setEnabled: setStudentTranscriptGradesStatus, setQueryKeys: setQueryForStudentTranscriptGrades } = useDataQuery(studentTranscriptGradesResource);
     const [isLoading, setIsLoading] = useState(false);
     const [snackbarConfig, setSnackbarConfig] = useState({
@@ -111,10 +113,20 @@ const FacultyGradeChange = () => {
                 const facultyID = decoded.user.erpId;
                 const facultyGuid = decoded.user.id;
                 const facultyName = userInfo.firstName;
-                setData({ facultyID, facultyName, facultyGuid })
+                setData({ facultyID, facultyName, facultyGuid });
+
+                setFacultyKeys({ id: facultyGuid })
+                setFacultyStatus(true);
             }
         })();
     }, [userInfo, data.facultyID]);
+
+    useEffect(() => {
+        if (Object.keys(faculty).length && !Object.keys(facultyError).length) {
+            const { fullName } = faculty;
+            setData({ facultyName: fullName });
+        }
+    }, [faculty, facultyError]);
 
     useEffect(() => {
         if (data.term) {
@@ -516,6 +528,11 @@ function FacultyGradeChangeWithProviders() {
         ...options,
           queryFunction: fetchGradeChangeReasons,
         resource: gradeChangeReasonsResource
+      },
+      {
+        ...options,
+        queryFunction: fetchPersons,
+        resource: personsResource
       },
       {
         ...options,
