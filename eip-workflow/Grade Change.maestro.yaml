@@ -1,5 +1,5 @@
 name: Grade Change
-description: ''
+description: ""
 maestroYamlVersion: 1.0.0
 type: api
 segments:
@@ -92,7 +92,7 @@ segments:
     name: Request for Grade Change
     config:
       approvalView:
-        approvalDetails: ''
+        approvalDetails: ""
         approvalSelectedData:
           - displayName: Faculty Name
             name: facultyName

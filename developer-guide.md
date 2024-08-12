@@ -1,12 +1,12 @@
-# Experience Faculty Grade Change - Maestro Workflow
+# Experience Faculty Grade Change - Intelligent Processes Workflow
 
 This extension facilitates a streamlined process for faculty members to formally request the registrar's intervention in grade adjustments for individual students.
 
 ## Table of Contents
 - DataConnect Serverless APIs
   - For Experience Extension
-  - For Maestro Actions
-- Maestro Workflow & Actions
+  - For Intelligent Processes Actions
+- Intelligent Processes Workflow & Actions
 - Experience Card
 
 ## Users
@@ -16,24 +16,24 @@ For this POC, we'll be using two type of users.
 | Role | Description  |
 |:----------|:----------|
 |  Faculty | The Faculty would login to the Experience to use the card |
-| Registrar | The Registrar Banner ID would be set in the Maestro Action block. This would inturn set the Registrar ID by calling the persons API and they would be one receiving the request for approval task |
+| Registrar | The Registrar Banner ID would be set in the Intelligent Processes Action block. This would inturn set the Registrar ID by calling the persons API and they would be one receiving the request for approval task |
 
 # DataConnect Serverless APIs
 ## For Experience Extension
 
 For this POC we require the utilization of EEDM APIs. Below are the list of all the APIs we need to create as DataConnect Serverless APIs for the experience extension to consume.
 
-| API | API Type | Maestro API Name |
+| API | API Type | Intelligent Processes API Name |
 |:-----|:--------|:-----------------|
-|[academic-periods](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_academic_periods_16.1.0/page/academic-periods.html) | EEDM | [get-academic-periods-maestro-workflow](./dataconnect/get-academic-periods-maestro-workflow.json) |
-| [grade-definitions](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html) | EEDM | [get-grade-definitions-maestro-workflow](./dataconnect/get-grade-definitions-maestro-workflow.json) |
-| [sections](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_sections_16.1.0/page/sections.html) | EEDM | [get-sections-maestro-workflow](./dataconnect/get-sections-maestro-workflow.json)|
-| [persons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_persons_12.6.0/page/persons.html) | EEDM | [get-persons-maestro-workflow](./dataconnect/get-persons-maestro-workflow.json)|
-| [section-registrations](https://resources.elluciancloud.com/bundle/banner_api_erp_api_section_registrations_1.0.0/page/section-registrations.html) | EEDM | [get-section-registrations-maestro-workflow](./dataconnect/get-section-registrations-maestro-workflow.json)|
-| [grade-change-reasons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html) | EEDM | [get-grade-change-reasons-maestro-workflow](./dataconnect/get-grade-change-reasons-maestro-workflow.json) |
-| [student-transcript-grades](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html) | EEDM | [get-student-transcript-grades-maestro-workflow](./dataconnect/get-student-transcript-grades-maestro-workflow.json) |
+|[academic-periods](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_academic_periods_16.1.0/page/academic-periods.html) | EEDM | [get-academic-periods-eip-workflow](./dataconnect/get-academic-periods-eip-workflow.json) |
+| [grade-definitions](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html) | EEDM | [get-grade-definitions-eip-workflow](./dataconnect/get-grade-definitions-eip-workflow.json) |
+| [sections](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_sections_16.1.0/page/sections.html) | EEDM | [get-sections-eip-workflow](./dataconnect/get-sections-eip-workflow.json)|
+| [persons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_persons_12.6.0/page/persons.html) | EEDM | [get-persons-eip-workflow](./dataconnect/get-persons-eip-workflow.json)|
+| [section-registrations](https://resources.elluciancloud.com/bundle/banner_api_erp_api_section_registrations_1.0.0/page/section-registrations.html) | EEDM | [get-section-registrations-eip-workflow](./dataconnect/get-section-registrations-eip-workflow.json)|
+| [grade-change-reasons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_change_reasons_6.0.0/page/grade-change-reasons.html) | EEDM | [get-grade-change-reasons-eip-workflow](./dataconnect/get-grade-change-reasons-eip-workflow.json) |
+| [student-transcript-grades](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_1.1.0/page/student-transcript-grades.html) | EEDM | [get-student-transcript-grades-eip-workflow](./dataconnect/get-student-transcript-grades-eip-workflow.json) |
 
-All the above mentioned DataConnect Pipelines can be found at : https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/dataconnect
+All the above mentioned DataConnect Pipelines can be found at : https://github.com/ellucian-developer/experience-intelligent-processes-grade-change/tree/main/dataconnect
 
 Dataconnect Serverless APIs pipelines mentioned above are by default configured on the `.env` file. 
 
@@ -59,7 +59,7 @@ Now let us see how to create these DataConnect Serverless APIs on Integration De
 - You can add an optional description for your pipeline.
 - Save your pipeline.
 - At the middle top Next to your pipeline's name, use the dropdown menu and click "Import Pipeline." <img src="./docs/images/import.png" size="400px"/>
-- A file explorer window will pop up; here, please find and select your pipeline file in JSON format. (In this example please choose the file get-academic-periods-maestro_v0.0.3.json)
+- A file explorer window will pop up; here, please find and select your pipeline file in JSON format.
 
 ##### Step 3: Publish the Pipeline 
 
@@ -72,12 +72,12 @@ Similarily follow the same process and create all the remaining APIs under the s
 
 <hr>
 
-## DataConnect Serverless APIs for Maestro Actions
+## DataConnect Serverless APIs for Intelligent Processes Actions
 
 <p align="center">
 <img src="./docs/images/put.png" size="400px"/>
 </p>
-Following are the list of APIs we'll be using as DataConnect Serverless APIs for Maestro Actions. 
+Following are the list of APIs we'll be using as DataConnect Serverless APIs for Intelligent Processes Actions. 
 - [persons](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_persons_12.6.0/page/persons.html)
 - [PUT - student-transcript-grades](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_adjustments_1.0.0/page/student-transcript-grades-adjustments.html)
 
@@ -86,25 +86,25 @@ The APIs creation process is going to be same as the above section. However ther
 2. For the `student-transcript-grades` API, we have specify the HTTP method as `PUT`
 
 ##### Permissions
-- Follow the steps mentioned on https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_ethos_token_configuration.html for granting permissions for the DataConnect Serverless APIs for Maestro Actions
+- Follow the steps mentioned on https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_ethos_token_configuration.html for granting permissions for the DataConnect Serverless APIs for Intelligent Processes Actions
 
 > Note: The permission required for `Ethos Token` is different from `User Token` 
 
 <hr>
 
 
-## Maestro Workflow & Actions
+## Intelligent Processes Workflow & Actions
 
 #### Workflow Permissions   
 
-In order to create Workflow, we have to provide Read and Edit permissions for users to create Workflows on Maestro.
+In order to create Workflow, we have to provide Read and Edit permissions for users to create Workflows on Intelligent Processes.
 
 ##### Step 1: Log in to the Permissions Experience Setup page and navigate to Permissions 
 
 - Log in to the Experience Setup. 
 - At the top snack bar select the “Permissions” section.
 - Select the product and tenant where the permissions will be granted. 
-- Select the Maestro application by searching the name in the search bar.  
+- Select the Intelligent Processes application by searching the name in the search bar.  
 
 <p align="center">
 <img src="./docs/images/work-permission.png" width="700px" >
@@ -112,26 +112,26 @@ In order to create Workflow, we have to provide Read and Edit permissions for us
 
 ##### Step 2: Give Read and Edit Permission
 
-- Once you have accessed to the “maestro-experience-modeler Permissions” page, on the left-hand side of the page, you'll find "Workflow". 
+- Once you have accessed to the “experience-modeler Permissions” page, on the left-hand side of the page, you'll find "Workflow". 
 - Click on Workflow and give create permission to yourself and others who need the ability to create workflows
 
 #### Action Permissions   
 
-In order to create Actions, we have to provide Create permissions for users to create Actions for using them in Maestro Workflow.
+In order to create Actions, we have to provide Create permissions for users to create Actions for using them in Intelligent Processes Workflow.
 
 ##### Step 1: Log in to the Permissions Experience Setup page and navigate to Permissions 
 
 - Log in to the Experience Setup. 
 - At the top snack bar select the “Permissions” section.
 - Select the product and tenant where the permissions will be granted. 
-- Select the Maestro application by searching the name in the search bar.  
+- Select the Intelligent Processes application by searching the name in the search bar.  
 <p align="center">
 <img src="./docs/images/actions-permission.png" width="700px" >
 </p>
 
 ##### Step 2: Give Actions Create Permission
 
-- Once you have accessed to the “maestro-experience-modeler Permissions” page, on the left-hand side of the page, you'll find "Actions" and "All Actions”. 
+- Once you have accessed to the "Intelligent Processes Permissions” page, on the left-hand side of the page, you'll find "Actions" and "All Actions”. 
 - Click on Actions and give create permission to yourself and others who need the ability to create actions
 
 **Note:** Please be aware that there are two sections, "Actions" and "All Actions." The distinction between these sections lies in the permissions they grant. In the "Actions" section, permission is granted to create an Action. In the "All Actions" section, permission is granted to access and use the Action within a workflow. A similar distinction applies to "Workflows" and "All Workflows" sections." 
@@ -143,8 +143,8 @@ We have to create two actions.
 
 ### How to Create Actions
 
-##### Step 1: Open Maestro Designer 
-- Once logged in, navigate to Maestro Designer. 
+##### Step 1: Open Intelligent Processes Designer 
+- Once logged in, navigate to Intelligent Processes Designer. 
 
 ##### Step 2: Select the "Actions" Section 
 - On the left-hand side, click on the "Actions" section. 
@@ -222,24 +222,24 @@ For `Update Student Grade`, following should be the action definition
 - Save and Publish the Action to make it accessible for use.
 
 ### How to Create Workflow
-##### Step 1: Open Maestro Designer 
-- Once logged in, navigate to Maestro Designer. 
+##### Step 1: Open Intelligent Processes Designer 
+- Once logged in, navigate to Intelligent Processes Designer. 
 
 ##### Step 2: Select the "Actions" Section 
 - On the left-hand side, click on the "Workflows" section. 
 
-##### Step 3: Upload the Maestro Workflow
-- Now upload the maestro workflow `.yaml` file from here https://git.ellucian.com/projects/RANG/repos/experience-grade-correction-form-maestro/browse/maestro-workflow
+##### Step 3: Upload the Intelligent Processes Workflow
+- Now upload the Intelligent Processes workflow `.yaml` file from here https://github.com/ellucian-developer/experience-intelligent-processes-grade-change/tree/main/eip-workflow
 
 #### How to Use Actions in a Workflow
 ##### Step 1: Give Action Use Permission 
 - Log in to the Experience Setup. 
 - At the top snack bar select the “Permissions” section.
 - Select the product and tenant where the permissions will be granted. 
-- Select the Maestro application by searching the name in the search bar.
+- Select the Intelligent Processes application by searching the name in the search bar.
 - Click on "All Actions" to expand the list of available actions. 
 - Please note that only actions that have been published will be displayed here. 
-- To make the action available in the Action block of Maestro Designer, associate the permission to the role or user that can have access to using the action while building workflows. 
+- To make the action available in the Action block of Intelligent Processes Designer, associate the permission to the role or user that can have access to using the action while building workflows. 
 
 ##### Step 2: Within the Workflow, Add an Action Block. 
 
@@ -266,21 +266,21 @@ Note: Please adjust the mapping based on your implementation.
 **Note**: This section lists the incoming data along with friendly labels, variable names, descriptions, data types, and whether the data is a person ID. 
 
 <p align="center">
-    <img src="./docs/images/maestro.png" width="800px"/>
+    <img src="./docs/images/eip.png" width="800px"/>
 </p>
 
-#### Maestro Execution Permission
+#### Intelligent Processes Execution Permission
 
 ##### Step 1: Log in to the Permissions Experience Setup page and navigate to Permissions 
 
 - Log in to the Experience Setup. 
 - At the top snack bar select the “Permissions” section.
 - Select the product and tenant where the permissions will be granted. 
-- Select the Maestro application by searching the name in the search bar.  
+- Select the Intelligent Processes application by searching the name in the search bar.  
 
 ##### Step 2: Give Read and Edit Permission
 
-- Once you have accessed to the “maestro-experience-modeler Permissions” page, on the left-hand side of the page, you'll find "All Workflow". 
+- Once you have accessed to the “Intelligent Processes Permissions” page, on the left-hand side of the page, you'll find "All Workflow". 
 - Click on All Workflow and give execute permission to yourself and others who need the ability to create workflows
 
 ## Faculty Grade Change - Experience Card Extension
@@ -289,7 +289,7 @@ Note: Please adjust the mapping based on your implementation.
 
 Basically for this extension we'll be requiring two configuration settings.
 
-1. Workflow ID - For invoking the Maestro Workflow
+1. Workflow ID - For invoking the Intelligent Processes Workflow
 2. EthosAPIKey - For calling the DataConnect Serverless APIs.
    
 > Kindly remember that the key you enter on EthosAPIKey should also be configured on the PUT - student-transcript-grades action
@@ -300,7 +300,7 @@ Basically for this extension we'll be requiring two configuration settings.
 
 ##### How to get the Workflow ID
 
-You can grab the Workflow ID from your Maestro Workflow Settings. Open your Maestro Workflow and then at the center of the screen near to your Maestro Workflow name, you'll find an down arrow. Click on it and then select `Settings`. Under the settings you'll find your Workflow ID
+You can grab the Workflow ID from your Intelligent Processes Workflow Settings. Open your Intelligent Processes Workflow and then at the center of the screen near to your Intelligent Processes Workflow name, you'll find an down arrow. Click on it and then select `Settings`. Under the settings you'll find your Workflow ID
 
 
 #### Facult Grade Change - Card
@@ -325,7 +325,7 @@ Upon inputting the term code, the system dynamically populates all associated co
 
 ##### JSON Body
 
-The following JSON body is what we'll be submitting to Maestro Workflow API ie, `workflow-instances` API. We have to configure the below mentioned API keys on Maestro Start section. 
+The following JSON body is what we'll be submitting to Intelligent Processes Workflow API ie, `workflow-instances` API. We have to configure the below mentioned API keys on Intelligent Processes Start section. 
 
 ```JSON
     {

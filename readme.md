@@ -1,11 +1,11 @@
-# Experience Faculty Grade Change - Maestro Workflow
+# Experience Faculty Grade Change - Intelligent Processes Workflow
 
 This extension facilitates a streamlined process for faculty members to formally request the registrar's intervention in grade adjustments for individual students.
 
-It comprises code for a Experience Card and Page along with an associated Maestro workflow designed to facilitate grade changes by faculty members. 
+It comprises code for a Experience Card and Page along with an associated Intelligent Processes workflow designed to facilitate grade changes by faculty members. 
 
-- The Experience Card and Page enables faculty to specify the target course and desired grade adjustments, triggering the invocation of the Maestro workflow. 
-- The Maestro workflow, in turn, executes the grade change process using the information provided by the faculty through the Experience Page.
+- The Experience Card and Page enables faculty to specify the target course and desired grade adjustments, triggering the invocation of the Intelligent Processes workflow. 
+- The Intelligent Processes workflow, in turn, executes the grade change process using the information provided by the faculty through the Experience Page.
 
 
 ## Faculty Grade Change Form - Experience Card
@@ -29,9 +29,9 @@ Upon inputting the term code, the system dynamically populates all associated co
 
 ##### JSON Body
 
-The following JSON body is what we'll be submitting to Maestro Workflow API ie, `workflow-instances` API. We have to configure the below mentioned API parameters under the `variables` key on Maestro Start section. 
+The following JSON body is what we'll be submitting to Intelligent Processes Workflow API ie, `workflow-instances` API. We have to configure the below mentioned API parameters under the `variables` key on Intelligent Processes Start section. 
 
-Please refer the **Start Parameters** image under the Maestro Workflow section.
+Please refer the **Start Parameters** image under the Intelligent Processes Workflow section.
 
 ```JSON
     {
@@ -93,10 +93,10 @@ The fields which aren't marked as `Internal Use` would be shown to the registrar
 
 
 
-## Maestro Workflow
+## Intelligent Processes Workflow
 
 <p align="center">
-    <img src="./docs/images/maestro.png" width="800px"/>
+    <img src="./docs/images/eip.png" width="800px"/>
 </p>
 
 #### Start Parameters
@@ -122,7 +122,7 @@ This extension necessitated the utilization of EEDM APIs. The following is a com
 | grade-definitions | <ul><li>[Banner](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html)</li><li> [Colleague](https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_grade_definitions_6.0.0/page/grade-definitions.html)</li></ul> |
 | student-transcript-grades-adjustments | <ul><li>[Banner](https://resources.elluciancloud.com/bundle/banner_api_ethos_api_student_transcript_grades_adjustments_1.0.0/page/student-transcript-grades-adjustments.html)</li><li> [Colleague](https://resources.elluciancloud.com/bundle/colleague_api_ethos_api_student_transcript_grades_adjustments_1.0.0/page/student-transcript-grades-adjustments.html)</li></ul> |
 
-- [workflow-instances (Maestro Workflow API)](https://resources.elluciancloud.com/bundle/services_maestro_api_api_workflow_instances_1.0.0/page/workflow-instances.html)
+- [workflow-instances (Intelligent Processes Workflow API)](https://resources.elluciancloud.com/bundle/saas_eip_api_api_workflow_instances_1.0.0/page/workflow-instances.html)
 
 
 ### DataConnect Serverless APIs & Authorization
@@ -134,7 +134,7 @@ Kindly check the below documentation links for creating Serverless APIs and sett
 - [Ethos Token](https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_ethos_token_configuration.html)
 - [User Token](https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_user_token_configuration.html)
 
-For the documentation on `workflow-instances`, kindly refer [here](https://resources.elluciancloud.com/bundle/services_maestro_api_api_workflow_instances_1.0.0/page/workflow-instances.html).
+For the documentation on `workflow-instances`, kindly refer [here](https://resources.elluciancloud.com/bundle/saas_eip_api_api_workflow_instances_1.0.0/page/workflow-instances.html).
 
 ## Experience Page - Flow
 
@@ -161,14 +161,14 @@ As soon as the faculty keys in the term code the following data flow gets invoke
 | `student-transcript-grades`  | EEDM | To obtain the current grade of a student, utilize this API by providing the current academic period GUID and the student GUID as necessary parameters.    | <ul><li>`studentGUID`</li><li>`academicPeriodGUID`</li></ul> | <ul><li>`id`</li></ul> |User Token |
 | `grade-definitions`  | EEDM | To fetch the list of all accepted grade, this API needs to be called and can be filtered out based on the gradeScheme we retrived from sections API   | <ul><li>`schemeId`</li></ul> | <ul><li>`id`</li><li>`grade.value`</li></ul> |User Token |
 
-Upon acquiring all essential data for the Maestro workflow, proceed to invoke the `workflow-instances` Maestro API along with the workflow ID.
+Upon acquiring all essential data for the Intelligent Processes workflow, proceed to invoke the `workflow-instances` Intelligent Processes API along with the workflow ID.
 
 
-### Maestro Workflow Action
+### Intelligent Processes Workflow Action
 
 | DataConnect Serverless Endpoint    | API Type | Description | Required Params  | Authentication Type |
 | -------- | --------------|------- |--------------|--------------|
-| `student-transcript-grades/{id}`  | EEDM | When the registrar approves the grade change, then this API is invoked automatically via Maestro Action and updates the grade.   | <ul><li>`recordId`</li><li>`gradeId`</li><li>`changeReasonId`</li></ul> |Ethos Token |
+| `student-transcript-grades/{id}`  | EEDM | When the registrar approves the grade change, then this API is invoked automatically via Intelligent Processes Action and updates the grade.   | <ul><li>`recordId`</li><li>`gradeId`</li><li>`changeReasonId`</li></ul> |Ethos Token |
 
 
 ## Path Design System
