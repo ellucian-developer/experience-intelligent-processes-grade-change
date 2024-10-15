@@ -130,9 +130,9 @@ This extension necessitated the utilization of EEDM APIs. The following is a com
 It is imperative to generate Dataconnect Serverless APIs for all previously specified APIs, excluding the `workflow-instances`. Specifically, the `student-transcript-grades-adjustments` API will utilize the `Ethos Token` Authentication type, while all other APIs will employ the `User Token` authentication method.
 
 Kindly check the below documentation links for creating Serverless APIs and setting up authorizations permissions for the above mentioned authentication methods
-- [DataConnect Serverless APIs](https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_create_serverless_api.html)
-- [Ethos Token](https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_ethos_token_configuration.html)
-- [User Token](https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_user_token_configuration.html)
+- [DataConnect Serverless APIs](https://resources.elluciancloud.com/bundle/ethos_data_connect/page/t_dc_designer_create_serverless_api.html)
+- [Ethos Token](https://resources.elluciancloud.com/bundle/ethos_data_connect/page/t_dc_designer_ethos_token_configuration.html)
+- [User Token](https://resources.elluciancloud.com/bundle/ethos_data_connect/page/t_dc_designer_user_token_configuration.html)
 
 For the documentation on `workflow-instances`, kindly refer [here](https://resources.elluciancloud.com/bundle/saas_eip_api_api_workflow_instances_1.0.0/page/workflow-instances.html).
 
