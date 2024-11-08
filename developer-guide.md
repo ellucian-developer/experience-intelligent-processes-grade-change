@@ -68,7 +68,7 @@ Now let us see how to create these DataConnect Serverless APIs on Integration De
 Similarily follow the same process and create all the remaining APIs under the same package you have created on **Step 2**
 
 ##### Step 4: Permissions
-- Follow the steps mentioned on https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_user_token_configuration.html for granting permissions for the DataConnect Serverless APIs
+- Follow the steps mentioned on https://resources.elluciancloud.com/bundle/ethos_data_connect/page/t_dc_designer_user_token_configuration.html for granting permissions for the DataConnect Serverless APIs
 
 <hr>
 
@@ -86,7 +86,7 @@ The APIs creation process is going to be same as the above section. However ther
 2. For the `student-transcript-grades` API, we have specify the HTTP method as `PUT`
 
 ##### Permissions
-- Follow the steps mentioned on https://resources.elluciancloud.com/bundle/ethos_data_connect_int_design_acn_use/page/t_dc_designer_ethos_token_configuration.html for granting permissions for the DataConnect Serverless APIs for Intelligent Processes Actions
+- Follow the steps mentioned on https://resources.elluciancloud.com/bundle/ethos_data_connect/page/t_dc_designer_ethos_token_configuration.html for granting permissions for the DataConnect Serverless APIs for Intelligent Processes Actions
 
 > Note: The permission required for `Ethos Token` is different from `User Token` 
 
@@ -160,6 +160,8 @@ We have to create two actions.
   - **API Key**: Input the API key associated with your chosen pipeline.
   - **Action Definition**: enter the code below in the definition section
 
+**Note:** Action Names have to be `Get Registrar` and  `Update Student Grade`. In case of change in name, edit the property "name" and "code" in  class: action on Intelligent Processes workflow .yaml file from here https://github.com/ellucian-developer/experience-intelligent-processes-grade-change/tree/main/eip-workflow
+
 For `Get Registrar`, following should be the action definition
 
 ```JSON
@@ -217,6 +219,7 @@ For `Update Student Grade`, following should be the action definition
   "queryParameters": []
 }
 ```
+Note: Copy and paste the json for action schema within "Show Advanced Designer".
 
 ##### Step 5: Publish the PipelineAction 
 - Save and Publish the Action to make it accessible for use.
@@ -230,6 +233,8 @@ For `Update Student Grade`, following should be the action definition
 
 ##### Step 3: Upload the Intelligent Processes Workflow
 - Now upload the Intelligent Processes workflow `.yaml` file from here https://github.com/ellucian-developer/experience-intelligent-processes-grade-change/tree/main/eip-workflow
+
+Note: Under the start section, configure a new parameter "startedBy" with "Is Person" as the data type to assign it in simple task.
 
 #### How to Use Actions in a Workflow
 ##### Step 1: Give Action Use Permission 
@@ -250,8 +255,7 @@ For `Update Student Grade`, following should be the action definition
 ##### Step 3: Configure the Action Block. 
 
 - Once you've added the Actions block to your workflow, the configuration panel will open on the right.
-- Configure the Input Setup by mapping the Academic Program ID
-
+- Configure the Input Setup by mapping the Registars ID by editing "Query Parameter Setup" and choosing Exact Value and add the ERP ID of the student.
 Note: Please adjust the mapping based on your implementation.
 
 ##### Step 4: Preview Incoming Data(Get Registrar only)
