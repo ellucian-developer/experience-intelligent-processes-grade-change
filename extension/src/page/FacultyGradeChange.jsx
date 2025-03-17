@@ -8,7 +8,7 @@ import { useIntl } from 'react-intl';
 
 import { Edit, ListView } from '@ellucian/ds-icons/lib';
 import { MultiDataQueryProvider, useDataQuery, userTokenDataConnectQuery } from '@ellucian/experience-extension-extras';
-import { useData, usePageControl, useUserInfo } from '@ellucian/experience-extension-utils';
+import { useData, usePageControl, useUserInfo, useCardInfo } from '@ellucian/experience-extension-utils';
 import { Button, CircularProgress, Divider, DropdownTypeahead, DropdownTypeaheadItem, Grid, Snackbar, TextField, Typography, makeStyles } from '@ellucian/react-design-system/core';
 import { colorCtaIrisActive, colorCtaIrisBase, colorCtaIrisTint, colorTextNeutral250, colorTextNeutral400, spacing40 } from '@ellucian/react-design-system/core/styles/tokens';
 
@@ -27,8 +27,11 @@ const FacultyGradeChange = () => {
     const classes = useStyles();
     const { setPageTitle } = usePageControl();
     const userInfo = useUserInfo();
-    const { getExtensionJwt } = useData();
-    const { data: sections = [], isLoading: isFetchingSection, dataError: sectionsError, setEnabled: setSectionQueryStatus, setQueryKeys: setQueryForSection } = useDataQuery(sectionResource);
+    const { cardId, cardPrefix } = useCardInfo();
+    const { authenticatedEthosFetch, getExtensionJwt } = useData();
+    const [isFetchingSection, setIsFetchingSection] = useState(false);
+    const [sectionsError, setSectionsError] = useState(false);
+    const [sections, setSections] = useState([]);
     const { data: students = [], isLoading: isFetchingStudent, dataError: studentsError, setEnabled: setStudentQueryStatus, setQueryKeys: setQueryForStudent } = useDataQuery(sectionRegistrationResource);
     const { data: grades = [], isLoading: isFetchingGrades, dataError: gradesError, setEnabled: setGradeQueryStatus, setQueryKeys: setQueryForGrade } = useDataQuery(gradeDefinitionResource);
     const { data: changeCodes = [], isLoading: isFetchingCodes } = useDataQuery(gradeChangeReasonsResource);
@@ -88,14 +91,6 @@ const FacultyGradeChange = () => {
             return;
         }
 
-        if (gradesError && Object.keys(gradesError).length > 0) {
-            setSnackbarConfig({
-                open: true,
-                message: intl.formatMessage({ id: `errors.${gradesError?.message}` })
-            });
-            return;
-        }
-
         if (studentGradeError && Object.keys(studentGradeError).length > 0) {
             setSnackbarConfig({
                 open: true,
@@ -132,19 +127,32 @@ const FacultyGradeChange = () => {
     }, [faculty, facultyError]);
 
     useEffect(() => {
-        if (data.term) {
-            const selectedTerm = termCodes.filter(item => item.code === data.term);
-            if (selectedTerm.length) {
-                const academicPeriodId = selectedTerm[0].id;
-                setData({ academicPeriodId });
-                setQueryForSection({
-                    academicPeriodId,
-                    instructorId: data.facultyGuid
-                });
-                setSectionQueryStatus(true);
-            }
+        (async () => {
+            if (data.term) {
+                const selectedTerm = termCodes.filter(item => item.code === data.term);
+                if (selectedTerm.length) {
+                    const academicPeriodId = selectedTerm[0].id;
+                    setData({ academicPeriodId });
 
-        }
+                    const searchParameters = new URLSearchParams({
+                        cardId,
+                        cardPrefix,
+                        instructorId: data.facultyGuid,
+                        academicPeriodId
+                    }).toString();
+
+                    setIsFetchingSection(true);
+                    const response = await authenticatedEthosFetch(`${sectionResource}?${searchParameters}`, { headers: { Accept: 'application/json' }});
+                    const sectionData = await response.json();
+                    if (Number(response.status) !== 200) {
+                        setSectionsError({ message: "NO_SECTIONS_FOUND" });
+                    } else {
+                        setSections(sectionData);
+                    }
+                    setIsFetchingSection(false);
+                }
+            }
+        })();
     }, [data.term]);
 
     useEffect(() => {
